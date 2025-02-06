@@ -40,7 +40,12 @@ public class HandManager : MonoBehaviour
 
     private void Update()
     {
-        //UpdateHandVisuals();
+       UpdateHandVisuals();
+        /*
+         8
+        232.3
+        72.6
+         */
     }
 
     private void UpdateHandVisuals()
