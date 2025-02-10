@@ -377,9 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e587658d516ae5b42a6222497138c85b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allCards:
-  - {fileID: 11400000, guid: 423bcb8df98b7814db75bccd3f657560, type: 2}
-  - {fileID: 11400000, guid: 2e90ca90cdcb8974f964a01e7559dc06, type: 2}
+  allCards: []
 --- !u!1 &1666426682
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,10 +566,10 @@ MonoBehaviour:
   deckManager: {fileID: 0}
   cardPrefab: {fileID: 2054018714663271730, guid: 5f8cf6e4c74b4c34093c35c6cf20bc94, type: 3}
   handTransform: {fileID: 294056088}
-  maxHandSize: 5
+  maxHandSize: 6
   fanSpread: -8
-  cardSpacing: 232.3
-  verticalSpacing: 72.6
+  cardSpacing: 217
+  verticalSpacing: 81.3
   cardsInHand: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
