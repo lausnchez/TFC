@@ -19,7 +19,6 @@ public class HandManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 DrawCard();
-                Debug.Log("pollitaburger");
             }
 
         }

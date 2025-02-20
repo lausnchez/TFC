@@ -9,6 +9,7 @@ public class CardController : MonoBehaviour
     private Vector3 startDragPosition;
 
     private bool isTargeted;
+
     int damage = 5;
 
     // Start is called before the first frame update
