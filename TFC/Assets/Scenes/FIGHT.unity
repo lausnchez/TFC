@@ -1211,8 +1211,8 @@ Transform:
   m_GameObject: {fileID: 1698632762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0576, y: -0.0606, z: 0}
-  m_LocalScale: {x: 0.45269644, y: 0.46245354, z: 1}
+  m_LocalPosition: {x: 0.2186, y: -0.1066, z: 0}
+  m_LocalScale: {x: 0.48743966, y: 0.48372576, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineContainer: {fileID: 851509983}
   maxHandSize: 10
-  cardPrefab: {fileID: 6215150571536177323, guid: b0d71eba3726a38419e64d89c1d6a2d9, type: 3}
+  cardPrefab: {fileID: 3999364667866283773, guid: 5a411fc5e00183843a0a9e79fe97ef9b, type: 3}
   spawnPoint: {fileID: 1975321380}
 --- !u!4 &1720989282
 Transform:
