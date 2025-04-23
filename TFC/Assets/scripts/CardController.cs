@@ -15,7 +15,7 @@ public class CardController : MonoBehaviour
     void Start()
     {
         col = GetComponent<Collider2D>();
-        
+
     }
 
     private void OnMouseDown()
@@ -42,8 +42,13 @@ public class CardController : MonoBehaviour
                     EnemyController enemy = hit.GetComponent<EnemyController>();
                     if (enemy != null)
                     {
-                        enemy.TakeDamage(damage); // Inflige daño al enemigo
+                        enemy.TakeDamage(damage); // Inflige daï¿½o al enemigo
                         PlayerStaminaController.Instance.UseCard(); // Reduce stamina
+                        HandManager handManager = FindObjectOfType<HandManager>();
+                        if (handManager != null)
+                        {
+                            handManager.RemoveCard(gameObject);
+                        }
                         Destroy(gameObject); // Destruye la carta
                     }
                     return;
@@ -52,23 +57,23 @@ public class CardController : MonoBehaviour
         }
         else
         {
-            Debug.Log("No puedes usar esta carta. Insuficiente stamina.");
+            Debug.Log("No puedes usar esta carta. Insuficiente mana.");
         }
 
-        // Si no colisiona con un enemigo, vuelve a la posición original
+        // Si no colisiona con un enemigo, vuelve a la posiciï¿½n original
         transform.position = startDragPosition;
     }
 
     private Vector3 GetMousePositionInWorldSpace()
     {
         Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        p.z = 0f; 
+        p.z = 0f;
         return p;
     }
     // Update is called once per frame
     void Update()
     {
-        
+
     }
- 
+
 }

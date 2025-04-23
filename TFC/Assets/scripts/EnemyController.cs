@@ -10,47 +10,47 @@ public class EnemyController : MonoBehaviour
     private int probabilidadAtaque5 = 30; // 30% de probabilidad
     private int probabilidadAtaque7 = 20; // 20% de probabilidad
 
-    // Daños de cada ataque
+    // DaÃ±os de cada ataque
     private int danoAtaque2 = 2;
     private int danoAtaque5 = 5;
     private int danoAtaque7 = 7;
 
-    // Método para que el enemigo realice 3 ataques
+    // Metodo para que el enemigo realice 3 ataques
     public IEnumerator RealizarAtaques()
     {
         for (int i = 0; i < 3; i++)
         {
             int ataque = ElegirAtaque(); // Elige un ataque basado en las probabilidades
-            int dano = ObtenerDano(ataque); // Obtiene el daño del ataque elegido
+            int dano = ObtenerDano(ataque); // Obtiene el daÃ±o del ataque elegido
 
-            Debug.Log($"Enemigo ataca con el ataque {ataque}. Daño infligido: {dano}");
-            PlayerStaminaController.Instance.TakeDamage(dano); // Inflige daño al jugador
+            Debug.Log($"Enemigo ataca con el ataque {ataque}. Daï¿½o infligido: {dano}");
+            PlayerStaminaController.Instance.TakeDamage(dano); // Inflige daÃ±o al jugador
             yield return new WaitForSeconds(1f); // Espera 1 segundo entre ataques
         }
 
         Debug.Log("El enemigo ha terminado sus ataques.");
     }
 
-    // Método para elegir un ataque basado en las probabilidades
+    // Metodo para elegir un ataque basado en las probabilidades
     private int ElegirAtaque()
     {
-        int random = Random.Range(0, 100); // Genera un número aleatorio entre 0 y 99
+        int random = Random.Range(0, 100); // Genera un numero aleatorio entre 0 y 99
 
         if (random < probabilidadAtaque2)
         {
-            return 2; // Ataque de 2 de daño
+            return 2; // Ataque de 2 de daÃ±o
         }
         else if (random < probabilidadAtaque2 + probabilidadAtaque5)
         {
-            return 5; // Ataque de 5 de daño
+            return 5; // Ataque de 5 de daÃ±o
         }
         else
         {
-            return 7; // Ataque de 7 de daño
+            return 7; // Ataque de 7 de daÃ±o
         }
     }
 
-    // Método para obtener el daño del ataque elegido
+    // Mï¿½todo para obtener el daÃ±o del ataque elegido
     private int ObtenerDano(int ataque)
     {
         switch (ataque)
@@ -62,23 +62,32 @@ public class EnemyController : MonoBehaviour
             case 7:
                 return danoAtaque7;
             default:
-                return 0; // Si no se elige un ataque válido, no hace daño
+                return 0; // Si no se elige un ataque valido, no hace daÃ±o
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Card"))
+        {
+            Debug.Log("Â¡La carta golpeÃ³ al enemigo!");
+            // LÃ³gica para recibir daÃ±o o efectos de la carta
+            TakeDamage(10);
         }
     }
 
-    // Método para recibir daño
+    // Mï¿½todo para recibir daï¿½o
     public void TakeDamage(int damage)
     {
         vida -= damage; // Reduce la vida
-        Debug.Log("Enemigo recibió daño. Vida restante: " + vida);
+        Debug.Log("Enemigo recibiï¿½ daï¿½o. Vida restante: " + vida);
 
         if (vida <= 0)
         {
-            Die(); // Llama al método para manejar la muerte del enemigo
+            Die(); // Llama al mï¿½todo para manejar la muerte del enemigo
         }
     }
 
-    // Método para manejar la muerte del enemigo
+    // Mï¿½todo para manejar la muerte del enemigo
     public void Die()
     {
         if (vida <= 0)
