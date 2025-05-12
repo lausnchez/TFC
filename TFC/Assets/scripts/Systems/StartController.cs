@@ -9,8 +9,8 @@ public class StartController : MonoBehaviour
     public void CambiarEscena(string nombreEscena)
     {
         // Carga la escena con el nombre proporcionado
-        SceneManager.LoadScene("FIGHT");
-        Debug.Log($"Cambiando a la escena: {"FIGHT"}");
+        LoadingScreenManager.Instance.LoadSceneWithLoading("Map");
+        Debug.Log($"Cambiando a la escena: {"Map"}");
     }
 
     // Metodo para salir del juego

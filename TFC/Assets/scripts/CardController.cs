@@ -42,7 +42,7 @@ public class CardController : MonoBehaviour
                     EnemyController enemy = hit.GetComponent<EnemyController>();
                     if (enemy != null)
                     {
-                        enemy.TakeDamage(damage); // Inflige da�o al enemigo
+                        enemy.TakeDamage(damage); // Inflige daño al enemigo
                         PlayerStaminaController.Instance.UseCard(); // Reduce stamina
                         HandManager handManager = FindObjectOfType<HandManager>();
                         if (handManager != null)

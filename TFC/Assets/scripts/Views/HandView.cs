@@ -19,7 +19,7 @@ public class HandView : MonoBehaviour
     {
         cards.Add(cardview);
         yield return UpdateCardPositions(0.15f);
-        Debug.Log("No sale ADDCARD");
+
 
 
     }
@@ -43,7 +43,7 @@ public class HandView : MonoBehaviour
             cards[i].transform.DOMove(splinePosition + transform.position + 0.01f * i * Vector3.back, duration);
             cards[i].transform.DORotate(rotation.eulerAngles, duration);
         }
-        Debug.Log("No sale UPDATECARD");
+
         yield return new WaitForSeconds(duration);
 
     }
