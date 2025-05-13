@@ -48,7 +48,7 @@ public class HoverTest : MonoBehaviour
         pos.z = originalZ + hoverZOffset;
         transform.position = pos;
 
-        // Aplicar efecto de wiggle (ligera vibración)
+        // Aplicar efecto de wiggle (vibración)
         if (wiggleTween != null && wiggleTween.IsActive()) wiggleTween.Kill();
         wiggleTween = transform.DOShakeRotation(
             duration: 1f,
@@ -76,7 +76,7 @@ public class HoverTest : MonoBehaviour
 
         // Detener vibración
         if (wiggleTween != null && wiggleTween.IsActive()) wiggleTween.Kill();
-        transform.rotation = Quaternion.identity; // reset rotación
+        transform.rotation = Quaternion.identity; // reset rotacion
     }
 
     private IEnumerator ScaleTo(float targetScale)

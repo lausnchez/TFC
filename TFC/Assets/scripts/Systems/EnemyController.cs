@@ -1,8 +1,13 @@
 using System.Collections;
+using System.Data;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public GameObject player;
+    public GameObject turno;
+
+    public EnemyDeathHandler enemyDeathHandler;
     public int vida = 12; // Vida del enemigo
 
     // Probabilidades de cada ataque (en porcentajes)
@@ -15,6 +20,18 @@ public class EnemyController : MonoBehaviour
     private int danoAtaque5 = 5;
     private int danoAtaque7 = 7;
 
+
+
+    void Start()
+    {
+        // Busca el GameObject que tiene el script EnemyDeathHandler
+        enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
+
+        if (enemyDeathHandler == null)
+        {
+            Debug.LogError("No se encontró un EnemyDeathHandler en la escena.");
+        }
+    }
     // Metodo para que el enemigo realice 3 ataques
     public IEnumerator RealizarAtaques()
     {
@@ -23,7 +40,7 @@ public class EnemyController : MonoBehaviour
             int ataque = ElegirAtaque(); // Elige un ataque basado en las probabilidades
             int dano = ObtenerDano(ataque); // Obtiene el daño del ataque elegido
 
-            Debug.Log($"Enemigo ataca con el ataque {ataque}. Da�o infligido: {dano}");
+            Debug.Log($"Enemigo ataca con el ataque {ataque}. Daño infligido: {dano}");
             PlayerStaminaController.Instance.TakeDamage(dano); // Inflige daño al jugador
             yield return new WaitForSeconds(1f); // Espera 1 segundo entre ataques
         }
@@ -50,7 +67,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // M�todo para obtener el daño del ataque elegido
+    // Metodo para obtener el daño del ataque elegido
     private int ObtenerDano(int ataque)
     {
         switch (ataque)
@@ -75,25 +92,31 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // M�todo para recibir da�o
+    // Metodo para recibir daño
     public void TakeDamage(int damage)
     {
         vida -= damage; // Reduce la vida
-        Debug.Log("Enemigo recibi� da�o. Vida restante: " + vida);
+        Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
 
         if (vida <= 0)
         {
-            Die(); // Llama al m�todo para manejar la muerte del enemigo
+            Die(); // Llama al etodo para manejar la muerte del enemigo
         }
     }
 
-    // M�todo para manejar la muerte del enemigo
+    // Metodo para manejar la muerte del enemigo
     public void Die()
     {
         if (vida <= 0)
         {
             Debug.Log("Enemigo derrotado.");
+            enemyDeathHandler.OnEnemyDefeated();
             Destroy(gameObject);
+            Destroy(player);
+            Destroy(turno);
+            //Destroy(Map.Enemigo1);Esto no funciona bien ya que necesito crear una clase Map y asignar en el start de la escena map
+            //la referencia al enemigo1 que es en este caso el que quiero destruir ya que necesitamos destruirlo para poder avanzar al siguiente lvl
+
         }
     }
 }

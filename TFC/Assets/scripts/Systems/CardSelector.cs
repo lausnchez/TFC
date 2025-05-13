@@ -11,7 +11,7 @@ public class CardSelector : MonoBehaviour
     {
         if (cardIsMoving) return;
 
-        // --- Seleccionar con mouse o A (Fire1) ---
+        // --- Seleccionar con mouse o A (xbox) ---
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Joystick1Button0))
         {
             if (selectedCard == null)
@@ -20,7 +20,7 @@ public class CardSelector : MonoBehaviour
                 LaunchCardAtEnemy();
         }
 
-        // --- Deseleccionar con click derecho o B (Fire2) ---
+        // --- Deseleccionar con click derecho o B (xbox) ---
         if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Joystick1Button2))
         {
             DeselectCard();
