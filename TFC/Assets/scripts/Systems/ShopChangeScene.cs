@@ -8,8 +8,15 @@ public class ShopChangeScene : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            // Guardar la posición actual del jugador
+            Vector3 playerPos = collision.transform.position;
+            PlayerPrefs.SetFloat("PlayerPosX", playerPos.x - 0.8f);
+            PlayerPrefs.SetFloat("PlayerPosY", playerPos.y - 0.8f);
+            PlayerPrefs.Save();
+
+            // Cambiar de escena
             LoadingScreenManager.Instance.LoadSceneWithLoading("Shop");
-            Debug.Log("Cmabiando a Shopp?");
+            Debug.Log("Cambiando a Shop...");
         }
     }
 }

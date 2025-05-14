@@ -13,6 +13,8 @@ public class EnemyDeathHandler : MonoBehaviour
 
     private bool isDefeated = false;
     private float fadeTimer = 0f;
+    public GameObject Player;
+    public GameObject Audio;
 
     void Start()
     {
@@ -74,6 +76,8 @@ public class EnemyDeathHandler : MonoBehaviour
         yield return new WaitForSeconds(delay);
         Destroy(victoryBanner);//destruye el banner para que no siga apareciendo en otras escenas o en la pantalla de carga
         Destroy(blackFade);//destruye el fundido a negro para lo mismo que el anterior
+        Destroy(Player);
         LoadingScreenManager.Instance.LoadSceneWithLoading(sceneName);
+        Destroy(Player);
     }
 }
