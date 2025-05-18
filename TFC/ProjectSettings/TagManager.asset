@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - enemigo
+  - Card
+  - Farola
   layers:
   - Default
   - TransparentFX
@@ -39,6 +41,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2134660645
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: front
+    uniqueID: 962099109
     locked: 0
