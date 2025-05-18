@@ -110,7 +110,7 @@ public class PlayerStaminaController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         vidaJugador -= damage; // Reduce la vida del jugador
-        Debug.Log($"Jugador recibi� {damage} de da�o. Vida restante: {vidaJugador}");
+        Debug.Log($"Jugador recibio {damage} de daño. Vida restante: {vidaJugador}");
 
         if (vidaJugador <= 0)
         {
@@ -121,7 +121,7 @@ public class PlayerStaminaController : MonoBehaviour
     // Metodo para manejar la muerte del jugador
     public void Die()
     {
-        Debug.Log("�Has muerto!");
+        Debug.Log("Has muerto!");
         Destroy(gameObject);
         // Aqui puedes añadir logica adicional, como reiniciar el nivel o mostrar una pantalla de Game Over.
     }

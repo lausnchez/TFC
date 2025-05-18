@@ -2136,54 +2136,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1658942511}
   m_CullTransparentMesh: 1
---- !u!1 &1720989280
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1720989282}
-  - component: {fileID: 1720989281}
-  m_Layer: 0
-  m_Name: HandManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1720989281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1720989280}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e85d92ddfadefc24489aa8f9c564bb24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  splineContainer: {fileID: 0}
-  maxHandSize: 8
-  cardPrefab: {fileID: 6215150571536177323, guid: b0d71eba3726a38419e64d89c1d6a2d9, type: 3}
-  spawnPoint: {fileID: 1975321380}
---- !u!4 &1720989282
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1720989280}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.3697062, y: -0.06108904, z: 1.5768133}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1730033647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2282,7 +2234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxStamina: 100
-  currentStamina: 0
+  currentStamina: 24
   staminaCostPerCard: 20
   vidaJugador: 50
   staminaRegenRate: 5
@@ -2860,7 +2812,6 @@ SceneRoots:
   - {fileID: 55512834}
   - {fileID: 630037718}
   - {fileID: 530192591}
-  - {fileID: 1720989282}
   - {fileID: 1975321380}
   - {fileID: 700708236}
   - {fileID: 2068285859}
