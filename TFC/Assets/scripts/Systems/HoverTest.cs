@@ -5,6 +5,7 @@ using DG.Tweening;
 public class HoverTest : MonoBehaviour
 {
     public GameObject borderObject;
+    public GameObject daggerObject;
 
     [HideInInspector] public Vector3 originalScale = Vector3.one;
     private float originalZ;
@@ -22,6 +23,8 @@ public class HoverTest : MonoBehaviour
 
         if (borderObject != null)
             borderObject.SetActive(false);
+        if (daggerObject != null)
+            daggerObject.SetActive(false);
     }
 
     void OnMouseEnter()
@@ -42,6 +45,8 @@ public class HoverTest : MonoBehaviour
         // Activar borde (glow)
         if (borderObject != null)
             borderObject.SetActive(true);
+        if (daggerObject != null)
+            daggerObject.SetActive(true);
 
         // Subir en eje Z para que esté delante
         Vector3 pos = transform.position;
@@ -51,9 +56,9 @@ public class HoverTest : MonoBehaviour
         // Aplicar efecto de wiggle (vibración)
         if (wiggleTween != null && wiggleTween.IsActive()) wiggleTween.Kill();
         wiggleTween = transform.DOShakeRotation(
-            duration: 1f,
+            duration: 0.5f,
             strength: new Vector3(0, 0, 5), // solo rotación en Z
-            vibrato: 18,
+            vibrato: 8,
             randomness: 90,
             fadeOut: false,
             randomnessMode: ShakeRandomnessMode.Full
@@ -68,6 +73,8 @@ public class HoverTest : MonoBehaviour
         // Desactivar glow
         if (borderObject != null)
             borderObject.SetActive(false);
+        if (daggerObject != null)
+            daggerObject.SetActive(false);
 
         // Volver al z original
         Vector3 pos = transform.position;

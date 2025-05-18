@@ -651,6 +651,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8019099702857972370, guid: 1665fa745e965d84cbc19e61b986f1c5, type: 3}
   m_PrefabInstance: {fileID: 1130496591}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &486183597 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 19105301246786585, guid: 1665fa745e965d84cbc19e61b986f1c5, type: 3}
+  m_PrefabInstance: {fileID: 1130496591}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &530192586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,6 +1434,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 700708236}
     m_Modifications:
+    - target: {fileID: 19105301246786585, guid: 1665fa745e965d84cbc19e61b986f1c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1457748589321760330, guid: 1665fa745e965d84cbc19e61b986f1c5, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1534,6 +1543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   borderObject: {fileID: 2001020514}
+  daggerObject: {fileID: 486183597}
   originalScale: {x: 0, y: 0, z: 0}
   hoverScale: 1.2
   scaleSpeed: 5

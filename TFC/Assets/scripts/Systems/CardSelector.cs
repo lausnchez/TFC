@@ -39,7 +39,7 @@ public class CardSelector : MonoBehaviour
             {
                 selectedCard = card;
                 originalScale = selectedCard.transform.localScale;
-                selectedCard.transform.localScale = originalScale * 1.3f;
+                selectedCard.transform.localScale = originalScale * 1.2f;
                 Debug.Log("Carta seleccionada: " + card.name);
             }
         }
@@ -72,7 +72,7 @@ public class CardSelector : MonoBehaviour
     {
         cardIsMoving = true;
 
-        float speed = 5f;
+        float speed = 9f;
         while (Vector2.Distance(card.transform.position, enemy.transform.position) > 0.1f)
         {
             card.transform.position = Vector2.MoveTowards(card.transform.position, enemy.transform.position, Time.deltaTime * speed);
