@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Data;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -8,7 +10,10 @@ public class EnemyController : MonoBehaviour
     public GameObject turno;
 
     public EnemyDeathHandler enemyDeathHandler;
-    public int vida = 12; // Vida del enemigo
+    public int vida_maxima = 12; // Vida del enemigo
+    public int vida_actual; // Vida actual del enemigo;
+    [SerializeField] EnemyHealthbar healthBar;
+    [SerializeField] TMP_Text health_number;
 
     // Probabilidades de cada ataque (en porcentajes)
     private int probabilidadAtaque2 = 50; // 50% de probabilidad
@@ -20,17 +25,19 @@ public class EnemyController : MonoBehaviour
     private int danoAtaque5 = 5;
     private int danoAtaque7 = 7;
 
-
-
     void Start()
     {
         // Busca el GameObject que tiene el script EnemyDeathHandler
         enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
+        vida_actual = vida_maxima; // Inicializa la vida actual con la vida máxima
+        health_number.text = vida_maxima.ToString();
 
         if (enemyDeathHandler == null)
         {
             Debug.LogError("No se encontró un EnemyDeathHandler en la escena.");
         }
+
+        healthBar.SetMaxHealth(vida_maxima); // Inicializa la barra de salud
     }
     // Metodo para que el enemigo realice 3 ataques
     public IEnumerator RealizarAtaques()
@@ -95,10 +102,25 @@ public class EnemyController : MonoBehaviour
     // Metodo para recibir daño
     public void TakeDamage(int damage)
     {
-        vida -= damage; // Reduce la vida
-        Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
+        vida_maxima -= damage; // Reduce la vida
+        Debug.Log("Enemigo recibio daño. Vida restante: " + vida_maxima);
+        vida_actual -= damage; // Actualiza la vida actual
+        if (vida_actual < 0)
+        {
+            vida_actual = 0;
+        }
 
-        if (vida <= 0)
+        healthBar.UpdateHealth(vida_actual);
+        if (vida_actual > 0)
+        {
+            health_number.text = vida_actual.ToString();
+        }
+        else
+        {
+            health_number.text = 0.ToString();
+        }
+
+        if (vida_maxima <= 0)
         {
             Die(); // Llama al etodo para manejar la muerte del enemigo
         }
@@ -107,7 +129,7 @@ public class EnemyController : MonoBehaviour
     // Metodo para manejar la muerte del enemigo
     public void Die()
     {
-        if (vida <= 0)
+        if (vida_actual <= 0)
         {
             Debug.Log("Enemigo derrotado.");
             enemyDeathHandler.OnEnemyDefeated();
@@ -116,7 +138,6 @@ public class EnemyController : MonoBehaviour
             Destroy(turno);
             //Destroy(Map.Enemigo1);Esto no funciona bien ya que necesito crear una clase Map y asignar en el start de la escena map
             //la referencia al enemigo1 que es en este caso el que quiero destruir ya que necesitamos destruirlo para poder avanzar al siguiente lvl
-
         }
     }
 }
