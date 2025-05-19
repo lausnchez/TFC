@@ -28,7 +28,7 @@ public class PlayerStaminaController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Opcional: Para mantener el objeto entre escenas
+            //DontDestroyOnLoad(gameObject); // Opcional: Para mantener el objeto entre escenas
         }
         else
         {

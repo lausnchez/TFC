@@ -22,11 +22,11 @@ public class CardView : MonoBehaviour
         }
     }
 
-    public void SetCardData(CardData data)
+    public void SetCardData(Cards.CardDataAPI data)
     {
-        title.text = data.title;
+        title.text = data.name;
         description.text = data.description;
-        image.sprite = data.image;
+        // image.sprite = data.image;
     }
 
     // Detectar colisiones con enemigos

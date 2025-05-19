@@ -2,36 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class CreateCardView : Singleton<CreateCardView>
 {
     [SerializeField] private CardView cardPrefab;
 
-    [Header("Cartas disponibles")]
-    [SerializeField] private Sprite fireCard;
-    [SerializeField] private Sprite iceCard;
-    [SerializeField] private Sprite lightning;
-    [SerializeField] private Sprite poison;
-
-    private List<CardData> cardDataList;
+    private List<Cards.CardDataAPI> apiCardDataList = new List<Cards.CardDataAPI>();
 
     private void Awake()
     {
         base.Awake();
-        cardDataList = new List<CardData>()
+
+        // Cambia la URL por la tuya
+        StartCoroutine(LoadCardsFromAPI("http://localhost/cards.php"));
+    }
+
+    private IEnumerator LoadCardsFromAPI(string url)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get(url))//creamos una peticion a la api
         {
-            new CardData() { title = "Fuego", description = "Quema al enemigo", image = fireCard },
-            new CardData() { title = "Hielo", description = "Congela al enemigo", image = iceCard },
-            new CardData() { title = "Rayo", description = "Electrocuta al enemigo", image = lightning },
-            new CardData() { title = "Veneno", description = "Envenena al enemigo", image = poison },
-        };
+            yield return www.SendWebRequest();//esperamos que termine la peticion
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error cargando API: " + www.error);
+            }
+            else
+            {
+                string json = www.downloadHandler.text;//se obtiene el contenido textual de la api,downloadHandler.text es lo que devuelve el server en este caso el array de cartas
+                apiCardDataList = Cards.JsonUtilityWrapper.FromJson<Cards.CardDataAPI>(json);
+                Debug.Log($"Cartas cargadas: {apiCardDataList.Count}");
+            }
+        }
     }
 
     public CardView CreatorCardView(Vector3 position, Quaternion rotation)
     {
-        int randomIndex = Random.Range(0, cardDataList.Count);
-        CardData randomData = cardDataList[randomIndex];
+        if (apiCardDataList == null || apiCardDataList.Count == 0)
+        {
+            Debug.LogWarning("No hay cartas cargadas para mostrar.");
+            return null;
+        }
 
+        int randomIndex = Random.Range(0, apiCardDataList.Count);
+        Cards.CardDataAPI apiCard = apiCardDataList[randomIndex];
 
         CardView cardView = Instantiate(cardPrefab, position, rotation);
         cardView.gameObject.tag = "Card";
@@ -41,20 +56,19 @@ public class CreateCardView : Singleton<CreateCardView>
         if (hover == null)
             hover = cardView.gameObject.AddComponent<HoverTest>();
 
-        // Escalado inicial con DOTween y guardamos originalScale al finalizar
         cardView.transform.DOScale(Vector3.one, 0.15f).OnComplete(() =>
         {
             hover.originalScale = cardView.transform.localScale;
         });
 
-        cardView.SetCardData(randomData);
+        // Aquí debes adaptar SetCardData para aceptar Cards.CardDataAPI o hacer otro método
+        cardView.SetCardData(apiCard);
 
-        // Buscar el borde dentro del wrapper
         Transform borderTransform = cardView.transform.Find("Wrapper/BorderObject");
         if (borderTransform != null)
         {
             hover.borderObject = borderTransform.gameObject;
-            hover.borderObject.SetActive(false); // lo ocultamos por defecto
+            hover.borderObject.SetActive(false);
         }
         else
         {

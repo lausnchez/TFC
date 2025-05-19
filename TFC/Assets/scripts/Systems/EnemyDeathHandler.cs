@@ -22,11 +22,16 @@ public class EnemyDeathHandler : MonoBehaviour
         Color c = blackFade.color;
         c.a = 0f;
         blackFade.color = c;
+        if (Player == null)
+        {
+            Player = GameObject.FindGameObjectWithTag("Destroy");
+        }
     }
 
     public void OnEnemyDefeated()
     {
         isDefeated = true;
+        Destroy(Player);
         StartCoroutine(AnimateVictoryBanner());
         StartCoroutine(ChangeSceneAfterDelay(nextSceneName, fadeDuration + timeBeforeSceneChange));
     }
@@ -76,8 +81,9 @@ public class EnemyDeathHandler : MonoBehaviour
         yield return new WaitForSeconds(delay);
         Destroy(victoryBanner);//destruye el banner para que no siga apareciendo en otras escenas o en la pantalla de carga
         Destroy(blackFade);//destruye el fundido a negro para lo mismo que el anterior
-        Destroy(Player);
+                           // Destroy(Player);
+        Destroy(Audio);
         LoadingScreenManager.Instance.LoadSceneWithLoading(sceneName);
-        Destroy(Player);
+        //Destroy(Player);
     }
 }

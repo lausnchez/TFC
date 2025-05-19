@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class ControllerTest : MonoBehaviour
@@ -11,9 +12,15 @@ public class ControllerTest : MonoBehaviour
     private float lastInputTime;
 
     private CardView selectedCard;
+    private Controller controller;
 
+    void Awake()
+    {
+        controller = new();
+    }
     void Start()
     {
+
         cards = handView.GetCards();
         if (cards.Count > 0)
         {
@@ -22,21 +29,20 @@ public class ControllerTest : MonoBehaviour
         }
     }
 
+
     void Update()
     {
         if (cards == null || cards.Count == 0) return;
 
         // Entrada para seleccionar carta
         float horizontal = Input.GetAxisRaw("Horizontal");
-        bool dpadLeft = Input.GetKeyDown(KeyCode.JoystickButton7); // D-Pad Left (dependiendo del mando puede variar)
-        bool dpadRight = Input.GetKeyDown(KeyCode.JoystickButton8); // D-Pad Right
-
-        if ((horizontal > 0.5f || dpadRight || Input.GetKeyDown(KeyCode.RightArrow)) && Time.time - lastInputTime > inputCooldown)
+        float horizontal1 = Input.GetAxisRaw("dpadHorizontal");//este es para el dpad
+        if ((horizontal > 0.5f || horizontal1 > 0.5f || Input.GetKeyDown(KeyCode.RightArrow)) && Time.time - lastInputTime > inputCooldown)
         {
             MoveSelection(1);
             lastInputTime = Time.time;
         }
-        else if ((horizontal < -0.5f || dpadLeft || Input.GetKeyDown(KeyCode.LeftArrow)) && Time.time - lastInputTime > inputCooldown)
+        else if ((horizontal < -0.5f || horizontal1 < -0.5f || Input.GetKeyDown(KeyCode.LeftArrow)) && Time.time - lastInputTime > inputCooldown)
         {
             MoveSelection(-1);
             lastInputTime = Time.time;

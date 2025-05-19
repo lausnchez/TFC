@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public GameObject player;
+    public GameObject Player;
     public GameObject turno;
 
     public EnemyDeathHandler enemyDeathHandler;
@@ -112,7 +112,7 @@ public class EnemyController : MonoBehaviour
             Debug.Log("Enemigo derrotado.");
             enemyDeathHandler.OnEnemyDefeated();
             Destroy(gameObject);
-            Destroy(player);
+            Destroy(Player);
             Destroy(turno);
             //Destroy(Map.Enemigo1);Esto no funciona bien ya que necesito crear una clase Map y asignar en el start de la escena map
             //la referencia al enemigo1 que es en este caso el que quiero destruir ya que necesitamos destruirlo para poder avanzar al siguiente lvl

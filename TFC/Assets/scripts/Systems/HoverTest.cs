@@ -5,6 +5,7 @@ using DG.Tweening;
 public class HoverTest : MonoBehaviour
 {
     public GameObject borderObject;
+    public GameObject Knife;
 
     [HideInInspector] public Vector3 originalScale = Vector3.one;
     private float originalZ;
@@ -22,6 +23,8 @@ public class HoverTest : MonoBehaviour
 
         if (borderObject != null)
             borderObject.SetActive(false);
+        if (Knife != null)
+            Knife.SetActive(false);
     }
 
     void OnMouseEnter()
@@ -42,6 +45,7 @@ public class HoverTest : MonoBehaviour
         // Activar borde (glow)
         if (borderObject != null)
             borderObject.SetActive(true);
+        Knife.SetActive(true);
 
         // Subir en eje Z para que esté delante
         Vector3 pos = transform.position;
@@ -68,6 +72,7 @@ public class HoverTest : MonoBehaviour
         // Desactivar glow
         if (borderObject != null)
             borderObject.SetActive(false);
+        Knife.SetActive(false);
 
         // Volver al z original
         Vector3 pos = transform.position;

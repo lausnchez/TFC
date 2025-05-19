@@ -15,5 +15,6 @@ public class Test : MonoBehaviour
             StartCoroutine(handView.AddCard(cardView));
         }
         //Debug.Log("No sale nada");
+
     }
 }
