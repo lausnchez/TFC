@@ -1,0 +1,56 @@
+{
+    "name": "Controller",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "27f8fd94-66e6-4566-a7e2-68eb7d595251",
+            "actions": [
+                {
+                    "name": "DpadHorizontal",
+                    "type": "PassThrough",
+                    "id": "084cf127-4cc4-4cbd-8aa2-6e3354dcd804",
+                    "expectedControlType": "Dpad",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "45af25d9-e121-4a65-9e25-e59c1777e396",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DpadHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dea6ecf7-a667-432c-b8a4-87c829fe406e",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DpadHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba6dd50c-85c7-4277-ad3a-c297da20ad3a",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DpadHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
