@@ -76,4 +76,4 @@ crashlytics-build.properties
 .plastic/
 plastic.*
 
-/TFC/.plastic
+TFC/.plastic
