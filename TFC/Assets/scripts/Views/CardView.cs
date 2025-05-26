@@ -27,6 +27,7 @@ public class CardView : MonoBehaviour
         title.text = data.name;
         description.text = data.description;
         // image.sprite = data.image;
+        mana.text = data.cost.ToString();
     }
 
     // Detectar colisiones con enemigos

@@ -13,8 +13,6 @@ public class CreateCardView : Singleton<CreateCardView>
     private void Awake()
     {
         base.Awake();
-
-        // Cambia la URL por la tuya
         StartCoroutine(LoadCardsFromAPI("https://tfgvideojuego.lausnchez.es/api/card"));
     }
 

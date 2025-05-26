@@ -47,7 +47,6 @@ public class Cards
         {
             // Para que JsonUtility pueda parsear un array JSON, lo envolvemos en un objeto con "items"
             string newJson = "{\"items\":" + json + "}";
-            Debug.Log($"JSON recibido: {newJson}");
             Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
             return wrapper.items;
         }
