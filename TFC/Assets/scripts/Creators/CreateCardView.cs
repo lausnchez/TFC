@@ -15,7 +15,7 @@ public class CreateCardView : Singleton<CreateCardView>
         base.Awake();
 
         // Cambia la URL por la tuya
-        StartCoroutine(LoadCardsFromAPI("http://localhost/cards.php"));
+        StartCoroutine(LoadCardsFromAPI("https://tfgvideojuego.lausnchez.es/api/card"));
     }
 
     private IEnumerator LoadCardsFromAPI(string url)

@@ -23,7 +23,13 @@ public class Cards
         public int cost;
         public int currency_cost;
         public string image;
-        public string target;
+        public enum target_enum
+        {
+            unique,
+            all,
+            self
+        }
+        public target_enum target;
         public float rarity;
         public List<CardEffect> effects;
     }
@@ -41,6 +47,7 @@ public class Cards
         {
             // Para que JsonUtility pueda parsear un array JSON, lo envolvemos en un objeto con "items"
             string newJson = "{\"items\":" + json + "}";
+            Debug.Log($"JSON recibido: {newJson}");
             Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
             return wrapper.items;
         }
