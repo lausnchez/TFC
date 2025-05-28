@@ -43,7 +43,7 @@ public class CreateCardView : Singleton<CreateCardView>
             return null;
         }
 
-        int randomIndex = Random.Range(0, apiCardDataList.Count);
+        int randomIndex = Random.Range(0, apiCardDataList.Count); // Habria que implementar el metodo de la baraja
         Cards.CardDataAPI apiCard = apiCardDataList[randomIndex];
 
         CardView cardView = Instantiate(cardPrefab, position, rotation);

@@ -8,7 +8,9 @@ public class EnemyController : MonoBehaviour
     public GameObject turno;
 
     public EnemyDeathHandler enemyDeathHandler;
+    public EnemyLifeBar healthBar;
     public int vida = 12; // Vida del enemigo
+    public int vidaMaxima = 12; // Vida máxima del enemigo
 
     // Probabilidades de cada ataque (en porcentajes)
     private int probabilidadAtaque2 = 50; // 50% de probabilidad
@@ -20,12 +22,11 @@ public class EnemyController : MonoBehaviour
     private int danoAtaque5 = 5;
     private int danoAtaque7 = 7;
 
-
-
     void Start()
     {
         // Busca el GameObject que tiene el script EnemyDeathHandler
         enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
+        healthBar.SetHealth(vida, vidaMaxima);
 
         if (enemyDeathHandler == null)
         {
@@ -96,11 +97,12 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         vida -= damage; // Reduce la vida
+        healthBar.SetHealth(vida, vidaMaxima); // Actualiza la barra de vida
         Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
 
         if (vida <= 0)
         {
-            Die(); // Llama al etodo para manejar la muerte del enemigo
+            Die(); // Llama al método para manejar la muerte del enemigo
         }
     }
 
@@ -114,6 +116,7 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
             Destroy(Player);
             Destroy(turno);
+            Destroy(healthBar);
             //Destroy(Map.Enemigo1);Esto no funciona bien ya que necesito crear una clase Map y asignar en el start de la escena map
             //la referencia al enemigo1 que es en este caso el que quiero destruir ya que necesitamos destruirlo para poder avanzar al siguiente lvl
 
