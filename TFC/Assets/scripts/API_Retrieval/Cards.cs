@@ -51,6 +51,4 @@ public class Cards
             return wrapper.items;
         }
     }
-
-
 }

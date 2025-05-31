@@ -57,7 +57,7 @@ public class HoverTest : MonoBehaviour
         wiggleTween = transform.DOShakeRotation(
             duration: 1f,
             strength: new Vector3(0, 0, 5), // solo rotación en Z
-            vibrato: 18,
+            vibrato: 10,
             randomness: 90,
             fadeOut: false,
             randomnessMode: ShakeRandomnessMode.Full

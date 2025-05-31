@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Data;
+using TMPro;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -9,8 +10,10 @@ public class EnemyController : MonoBehaviour
 
     public EnemyDeathHandler enemyDeathHandler;
     public EnemyLifeBar healthBar;
-    public int vida = 12; // Vida del enemigo
-    public int vidaMaxima = 12; // Vida máxima del enemigo
+    public int vidaMaxima = 33; // Vida máxima del enemigo
+    public int vida = 33; // Vida del enemigo
+    private float enemyPopupOffset = 2.5f;
+    public TextMeshProUGUI enemyName;
 
     // Probabilidades de cada ataque (en porcentajes)
     private int probabilidadAtaque2 = 50; // 50% de probabilidad
@@ -27,6 +30,7 @@ public class EnemyController : MonoBehaviour
         // Busca el GameObject que tiene el script EnemyDeathHandler
         enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
         healthBar.SetHealth(vida, vidaMaxima);
+        enemyName.text = "Esqueleto";
 
         if (enemyDeathHandler == null)
         {
@@ -99,6 +103,9 @@ public class EnemyController : MonoBehaviour
         vida -= damage; // Reduce la vida
         healthBar.SetHealth(vida, vidaMaxima); // Actualiza la barra de vida
         Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
+
+        Vector3 offset = new Vector3(0, enemyPopupOffset, 0); // Offset para el popup de daño
+        damage_popup.Create(transform.position + offset, damage);
 
         if (vida <= 0)
         {
