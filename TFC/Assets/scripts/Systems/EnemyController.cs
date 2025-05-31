@@ -1,18 +1,23 @@
+using System;
 using System.Collections;
 using System.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class EnemyController : MonoBehaviour
 {
+    public Enemies.EnemyDataAPI enemy;
     public GameObject Player;
     public GameObject turno;
 
+    public SpriteRenderer spriteRenderer;
     public EnemyDeathHandler enemyDeathHandler;
     public EnemyLifeBar healthBar;
     public int vidaMaxima = 33; // Vida máxima del enemigo
     public int vida = 33; // Vida del enemigo
     private float enemyPopupOffset = 2.5f;
+    private float spriteHeight;
     public TextMeshProUGUI enemyName;
 
     // Probabilidades de cada ataque (en porcentajes)
@@ -29,12 +34,57 @@ public class EnemyController : MonoBehaviour
     {
         // Busca el GameObject que tiene el script EnemyDeathHandler
         enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
-        healthBar.SetHealth(vida, vidaMaxima);
-        enemyName.text = "Esqueleto";
+        System.Random random = new System.Random();
+        int enemyNumber = random.Next(1, 4); // Genera un número aleatorio entre 1 y 3 (inclusive)
+
+        StartCoroutine(loadEnemyData("https://tfgvideojuego.lausnchez.es/api/enemy", enemyNumber));
+        
 
         if (enemyDeathHandler == null)
         {
             Debug.LogError("No se encontró un EnemyDeathHandler en la escena.");
+        }
+    }
+
+    private IEnumerator loadEnemyData(string url, int idEnemy)
+    {
+        string urlWithID = url + "/" + idEnemy;
+        using (UnityWebRequest www = UnityWebRequest.Get(urlWithID))//creamos una peticion a la api
+        {
+            yield return www.SendWebRequest();//esperamos que termine la peticion
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error cargando API: " + www.error);
+            }
+            else
+            {
+                string json = www.downloadHandler.text;
+                enemy = JsonUtility.FromJson<Enemies.EnemyDataAPI>(json);
+                Debug.Log("Datos del enemigo cargados: " + enemy.name);
+                
+                Sprite spriteEnemigo = Resources.Load<Sprite>("Enemies/" + enemy.sprite);
+                if (spriteEnemigo != null)
+                {
+                    try
+                    {
+                        spriteRenderer.sprite = spriteEnemigo; // Asignar el sprite al SpriteRenderer
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Error al asignar el sprite: " + e.Message);
+                    }
+                }
+                else Debug.LogError("No se pudo cargar el sprite del enemigo: " + enemy.sprite);
+
+                // Cambiar parámetros del enemigo
+                vidaMaxima = enemy.health;
+                vida = vidaMaxima;
+                enemyName.text = enemy.name;
+                // Setear la barra de vida
+                spriteHeight = spriteRenderer.bounds.size.y; // Obtener la altura del sprite
+                healthBar.SetHealth(vida, vidaMaxima,this.transform, spriteHeight);
+            }
         }
     }
     // Metodo para que el enemigo realice 3 ataques
@@ -56,7 +106,7 @@ public class EnemyController : MonoBehaviour
     // Metodo para elegir un ataque basado en las probabilidades
     private int ElegirAtaque()
     {
-        int random = Random.Range(0, 100); // Genera un numero aleatorio entre 0 y 99
+        int random = UnityEngine.Random.Range(0, 100); // Genera un numero aleatorio entre 0 y 99
 
         if (random < probabilidadAtaque2)
         {
@@ -101,7 +151,7 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         vida -= damage; // Reduce la vida
-        healthBar.SetHealth(vida, vidaMaxima); // Actualiza la barra de vida
+        healthBar.SetHealth(vida, vidaMaxima, this.transform, spriteHeight); // Actualiza la barra de vida
         Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
 
         Vector3 offset = new Vector3(0, enemyPopupOffset, 0); // Offset para el popup de daño
