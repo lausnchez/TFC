@@ -10,6 +10,7 @@ public class CardController : MonoBehaviour
 
     private bool isTargeted;
     int damage = 5;
+    int manaCost = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class CardController : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (PlayerStaminaController.Instance != null && PlayerStaminaController.Instance.CanUseCard())
+        if (PlayerStaminaController.Instance != null && PlayerStaminaController.Instance.CanUseCard(manaCost))
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 0.1f);
             foreach (Collider2D hit in hits)
@@ -43,7 +44,7 @@ public class CardController : MonoBehaviour
                     if (enemy != null)
                     {
                         enemy.TakeDamage(damage); // Inflige daño al enemigo
-                        PlayerStaminaController.Instance.UseCard(); // Reduce stamina
+                        PlayerStaminaController.Instance.UseCard(manaCost); // Reduce stamina
                         HandManager handManager = FindObjectOfType<HandManager>();
                         if (handManager != null)
                         {
@@ -70,10 +71,4 @@ public class CardController : MonoBehaviour
         p.z = 0f;
         return p;
     }
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 }

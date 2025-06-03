@@ -11,7 +11,8 @@ public class Enemies : MonoBehaviour
         public int id;
         public string name;
         public string description;
-        public int active_turns;
+        public int initial_turns;   // Turnos totales de la habilidad
+        public int active_turns;    // Turnos que le quedan a la habilidad
         public int value;
         public EffectPivot pivot;
     }
@@ -48,6 +49,7 @@ public class Enemies : MonoBehaviour
         {
             // Para que JsonUtility pueda parsear un array JSON, lo envolvemos en un objeto con "items"
             string newJson = "{\"enemies\":" + json + "}";
+            Debug.Log("JSON recibido: " + newJson); // Log para depuración
             Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
             return wrapper.enemies;
         }

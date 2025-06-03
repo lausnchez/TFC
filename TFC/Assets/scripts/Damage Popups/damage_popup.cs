@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Rendering;
+using Unity.VisualScripting;
 
 public class damage_popup : MonoBehaviour
 {
@@ -11,13 +12,14 @@ public class damage_popup : MonoBehaviour
     private Color textColor;
     private float moveYSpeed = 1f;
     private float decreaseScale = 0.5f;
+    private string popup_target; // "player" or "enemy"
 
     // Crear el PopUp
-    public static damage_popup Create(Vector3 position, int dmgAmount)
+    public static damage_popup Create(Vector3 position, string dmgAmount, string target, string attackName = "")
     {
         Transform dmgPopupTransform = Instantiate(GameAssets.i.pfDamagePopup, position, Quaternion.identity);
         damage_popup damagePopUp = dmgPopupTransform.GetComponent<damage_popup>();
-        damagePopUp.Setup(dmgAmount);
+        damagePopUp.Setup(dmgAmount, attackName, target);
         return damagePopUp;
     }
 
@@ -25,9 +27,19 @@ public class damage_popup : MonoBehaviour
     {
         textDamage = transform.GetComponent<TextMeshPro>();
     }
-    public void Setup(int dmg)
+
+    public void Setup(string dmg, string attackName, string target)
     {
-        textDamage.text = dmg.ToString();
+        if (target == "player")
+        {
+            textDamage.color = Color.red;
+            string dmg_string = $"<size=1.4>{attackName}</size>\n{dmg}";
+            textDamage.text = dmg_string;
+        }
+        else
+        {
+            textDamage.text = dmg;
+        }
         textColor = textDamage.color;
     }
 

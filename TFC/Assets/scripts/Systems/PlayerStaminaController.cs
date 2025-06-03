@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class PlayerStaminaController : MonoBehaviour
@@ -12,15 +13,19 @@ public class PlayerStaminaController : MonoBehaviour
 
     [Header("Vida del Jugador")]
     public int vidaJugador; // Vida del jugador
+    private int maxVidaJugador;
+    public TextMeshProUGUI playerLifeCounter;
 
     [Header("Regeneracion de Stamina")]
+    ManaSystem manaSystem;
+
     public float staminaRegenRate = 5f;
     private float regenCooldown = 2f;
     private float lastStaminaUseTime;
 
     private bool isPlayerTurn = true; // Controla de quien es el turno
 
-    public EnemyController enemyController; // Referencia al EnemyController
+    public EnemyController enemyController;
 
     private void Awake()
     {
@@ -34,30 +39,38 @@ public class PlayerStaminaController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // Mana management
+        manaSystem = GameAssets.i.ManaDisplay.GetComponent<ManaSystem>();
+        manaSystem.ResetMana(); // Resetea el mana al iniciar la pelea
+
+        // Life management
+        maxVidaJugador = vidaJugador;
+        playerLifeCounter.text = maxVidaJugador.ToString(); // Inicializa el contador de vida del jugador
     }
 
     private void Start()
     {
-        currentStamina = maxStamina; // Inicia con la estamina llena
+        manaSystem.ResetMana();
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    // Regeneracion de stamina durante el turno del jugador
+    //    if (isPlayerTurn && Time.time - lastStaminaUseTime >= regenCooldown && currentStamina < maxStamina)
+    //    {
+    //        RegenerateStamina();
+    //    }
+    //}
+
+    public bool CanUseCard(int mana)
     {
-        // Regeneracion de stamina durante el turno del jugador
-        if (isPlayerTurn && Time.time - lastStaminaUseTime >= regenCooldown && currentStamina < maxStamina)
-        {
-            RegenerateStamina();
-        }
+        return manaSystem.canUseMana(mana);
     }
 
-    public bool CanUseCard()
+    public void UseCard(int mana)
     {
-        return isPlayerTurn && currentStamina >= staminaCostPerCard;
-    }
-
-    public void UseCard()
-    {
-        if (CanUseCard())
+        if (CanUseCard(mana))
         {
             currentStamina -= staminaCostPerCard;
             lastStaminaUseTime = Time.time;
@@ -83,6 +96,7 @@ public class PlayerStaminaController : MonoBehaviour
             Debug.Log("Terminando turno del jugador...");
             isPlayerTurn = false; // Cambia al turno del enemigo
             StartCoroutine(EnemyTurn()); // Inicia la simulacion del turno del enemigo
+            //GameAssets.i.ManaDisplay.GetComponent<ManaSystem>().ResetMana(); // Resetea el mana al final del turno del jugador
         }
     }
 
@@ -93,10 +107,11 @@ public class PlayerStaminaController : MonoBehaviour
         yield return enemyController.StartCoroutine(enemyController.RealizarAtaques()); // Realiza los ataques del enemigo
 
         Debug.Log("Turno del enemigo terminado. Reiniciando estamina y comenzando tu turno.");
-        currentStamina = maxStamina; // Reinicia la estamina al maximo
+        manaSystem.ResetMana();
         isPlayerTurn = true; // Vuelve al turno del jugador
 
         // Mostrar la vida restante del jugador
+        
         Debug.Log($"Vida restante del jugador: {vidaJugador}");
 
         // Verificar si el jugador ha muerto
@@ -111,7 +126,7 @@ public class PlayerStaminaController : MonoBehaviour
     {
         vidaJugador -= damage; // Reduce la vida del jugador
         Debug.Log($"Jugador recibio {damage} de daño. Vida restante: {vidaJugador}");
-
+        actualizarLifeCounter();
         if (vidaJugador <= 0)
         {
             Die(); // Llama al metodo Die si la vida del jugador es 0 o menos
@@ -124,5 +139,10 @@ public class PlayerStaminaController : MonoBehaviour
         Debug.Log("Has muerto!");
         Destroy(gameObject);
         // Aqui puedes añadir logica adicional, como reiniciar el nivel o mostrar una pantalla de Game Over.
+    }
+
+    public void actualizarLifeCounter()
+    {
+        playerLifeCounter.text = vidaJugador.ToString(); // Actualiza el contador de vida del jugador
     }
 }

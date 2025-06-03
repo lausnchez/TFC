@@ -121,7 +121,7 @@ public class CardSelector : MonoBehaviour
     {
         cardIsMoving = true;
 
-        float speed = 5f;
+        float speed = 13f;
         while (Vector2.Distance(card.transform.position, enemy.transform.position) > 0.1f)
         {
             card.transform.position = Vector2.MoveTowards(card.transform.position, enemy.transform.position, Time.deltaTime * speed);

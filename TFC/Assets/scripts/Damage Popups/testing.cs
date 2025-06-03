@@ -8,7 +8,7 @@ public class testing : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            damage_popup.Create(Vector3.zero, 666);
+            damage_popup.Create(Vector3.zero, 666.ToString(), "player");
         }
     }
 }

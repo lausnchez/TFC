@@ -45,3 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pfDamagePopup: {fileID: 1257562235371675057, guid: fa65a12c1394fff48873df317f3ed6ea, type: 3}
+  Player: {fileID: 7937390015675346444, guid: 3ff344c888604b2428b0cc1aa4d066df, type: 3}
+  ManaDisplay: {fileID: 7347378400132791261, guid: 5e94d74752de54048ab4272bfcd3ec7b, type: 3}

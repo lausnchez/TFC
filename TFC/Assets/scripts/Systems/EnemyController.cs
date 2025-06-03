@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using TMPro;
 using UnityEngine;
@@ -7,42 +8,42 @@ using UnityEngine.Networking;
 
 public class EnemyController : MonoBehaviour
 {
-    public Enemies.EnemyDataAPI enemy;
+    private Enemies.EnemyDataAPI SelectedEnemy;
     public GameObject Player;
     public GameObject turno;
 
     public SpriteRenderer spriteRenderer;
     public EnemyDeathHandler enemyDeathHandler;
     public EnemyLifeBar healthBar;
-    public int vidaMaxima = 33; // Vida máxima del enemigo
-    public int vida = 33; // Vida del enemigo
+    private int vidaMaxima;
+    private int vida;
     private float enemyPopupOffset = 2.5f;
     private float spriteHeight;
     public TextMeshProUGUI enemyName;
 
-    // Probabilidades de cada ataque (en porcentajes)
-    private int probabilidadAtaque2 = 50; // 50% de probabilidad
-    private int probabilidadAtaque5 = 30; // 30% de probabilidad
-    private int probabilidadAtaque7 = 20; // 20% de probabilidad
-
-    // Daños de cada ataque
-    private int danoAtaque2 = 2;
-    private int danoAtaque5 = 5;
-    private int danoAtaque7 = 7;
+    // Lista de daños por turno
+    private List<Enemies.EnemyAttack> attack_list = new List<Enemies.EnemyAttack>();
+    public StatusEffectVisualizer statusEffectVisualizer;
 
     void Start()
     {
         // Busca el GameObject que tiene el script EnemyDeathHandler
-        enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();
-        System.Random random = new System.Random();
-        int enemyNumber = random.Next(1, 4); // Genera un número aleatorio entre 1 y 3 (inclusive)
-
-        StartCoroutine(loadEnemyData("https://tfgvideojuego.lausnchez.es/api/enemy", enemyNumber));
-        
-
+        enemyDeathHandler = FindObjectOfType<EnemyDeathHandler>();  
         if (enemyDeathHandler == null)
         {
             Debug.LogError("No se encontró un EnemyDeathHandler en la escena.");
+        }
+
+        // Elegir enemigo aleatorio
+        System.Random random = new System.Random();
+        int enemyNumber = random.Next(1, 4); // Genera un número aleatorio entre 1 y 3 (inclusive)
+        StartCoroutine(loadEnemyData("https://tfgvideojuego.lausnchez.es/api/enemy", 2));
+
+        // Inicializar el status effect visualizer
+        if (statusEffectVisualizer == null)
+        {
+            GameObject effectCanvas = GameObject.Find("EffectIconCanvas");
+            statusEffectVisualizer = effectCanvas.GetComponentInChildren<StatusEffectVisualizer>();
         }
     }
 
@@ -60,10 +61,10 @@ public class EnemyController : MonoBehaviour
             else
             {
                 string json = www.downloadHandler.text;
-                enemy = JsonUtility.FromJson<Enemies.EnemyDataAPI>(json);
-                Debug.Log("Datos del enemigo cargados: " + enemy.name);
-                
-                Sprite spriteEnemigo = Resources.Load<Sprite>("Enemies/" + enemy.sprite);
+                Debug.Log("JSON recibido: " + json); // Log para depuración
+                SelectedEnemy = JsonUtility.FromJson<Enemies.EnemyDataAPI>(json);
+                   
+                Sprite spriteEnemigo = Resources.Load<Sprite>("Enemies/" + SelectedEnemy.sprite);
                 if (spriteEnemigo != null)
                 {
                     try
@@ -75,12 +76,14 @@ public class EnemyController : MonoBehaviour
                         Debug.LogError("Error al asignar el sprite: " + e.Message);
                     }
                 }
-                else Debug.LogError("No se pudo cargar el sprite del enemigo: " + enemy.sprite);
+                else Debug.LogError("No se pudo cargar el sprite del enemigo: " + SelectedEnemy.sprite);
 
                 // Cambiar parámetros del enemigo
-                vidaMaxima = enemy.health;
+                vidaMaxima = SelectedEnemy.health;
                 vida = vidaMaxima;
-                enemyName.text = enemy.name;
+                enemyName.text = SelectedEnemy.name;
+                Debug.Log("Num de ataques:" + SelectedEnemy.effects.Count);
+
                 // Setear la barra de vida
                 spriteHeight = spriteRenderer.bounds.size.y; // Obtener la altura del sprite
                 healthBar.SetHealth(vida, vidaMaxima,this.transform, spriteHeight);
@@ -90,53 +93,78 @@ public class EnemyController : MonoBehaviour
     // Metodo para que el enemigo realice 3 ataques
     public IEnumerator RealizarAtaques()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            int ataque = ElegirAtaque(); // Elige un ataque basado en las probabilidades
-            int dano = ObtenerDano(ataque); // Obtiene el daño del ataque elegido
+        Enemies.EnemyAttack ataque = ElegirAtaque(); // Elige un ataque
+        attack_list.Add(ataque); // Añade el ataque a la lista de ataques
 
-            Debug.Log($"Enemigo ataca con el ataque {ataque}. Daño infligido: {dano}");
-            PlayerStaminaController.Instance.TakeDamage(dano); // Inflige daño al jugador
-            yield return new WaitForSeconds(1f); // Espera 1 segundo entre ataques
+        Debug.Log("----- Estado inicial de attack_list -----");
+        foreach (Enemies.EnemyAttack ataquerevisar in attack_list)
+        {
+            Debug.Log($"Nombre: {ataquerevisar.name}, Valor: {ataquerevisar.value}, Turnos restantes: {ataquerevisar.active_turns}, Turnos iniciales: {ataquerevisar.initial_turns}");
         }
 
-        Debug.Log("El enemigo ha terminado sus ataques.");
+
+        StartCoroutine(Attack_Resolve()); // Inicia la resolución de ataques
+
+        Debug.Log("----- Estado final de attack_list -----");
+        foreach (Enemies.EnemyAttack ataquerevisar in attack_list)
+        {
+            Debug.Log($"Nombre: {ataquerevisar.name}, Valor: {ataquerevisar.value}, Turnos restantes: {ataquerevisar.active_turns}, Turnos iniciales: {ataquerevisar.initial_turns}");
+        }
+
+        yield return new WaitForSeconds(1f); // Espera 1 segundo entre ataques
+    }
+
+    // Realiza los ataques y los retira de la lista de ataques en caso de ser necesario
+    // Todos los ataques se almacenan aqui, y en caso de ser un 1turn se resuelve inmediatamente y se saca de la lista
+    // En caso contrario seguirá ahí hasta que se acaben los turnos de ese ataque
+    public IEnumerator Attack_Resolve()
+    {
+        // Realizar los daños
+        List<Enemies.EnemyAttack> ataques_a_eliminar = new List<Enemies.EnemyAttack>();
+        foreach (Enemies.EnemyAttack ataque_realizado in attack_list)
+        {
+            // Daño al player
+            PlayerStaminaController.Instance.TakeDamage(ataque_realizado.value);
+
+            // Crear popup de daño
+            Vector3 playerDamage_Offset = new Vector3(0.5f, 2.2f, 0); // Offset para el popup de daño del jugador
+            damage_popup.Create(GameAssets.i.Player.position + playerDamage_Offset, ataque_realizado.value.ToString(), "player", ataque_realizado.name);
+
+            // Comprobar si hay algún ataque al que no le quedan turnos restantes
+            ataque_realizado.active_turns--;
+            if (ataque_realizado.active_turns <= 0)
+            {
+                ataques_a_eliminar.Add(ataque_realizado); // Añade el ataque a la lista de ataques a eliminar si ya no tiene turnos restantes
+                Debug.Log($"Ataque a eliminar: {ataque_realizado.name}");
+            }
+            yield return new WaitForSeconds(0.5f); // Espera 1 segundo entre ataques
+        }
+        // Quitar los ataques que ya no tienen turnos restantes
+        foreach (Enemies.EnemyAttack ataque_eliminado in ataques_a_eliminar)
+        {
+            Vector3 playerDamage_Offset = new Vector3(0.5f, 2.2f, 0); // Offset para el popup de daño del jugador
+            if (ataque_eliminado.initial_turns != 1)
+            {
+                damage_popup.Create(GameAssets.i.Player.position + playerDamage_Offset, "<size=1>" + ataque_eliminado.name + " terminado</size>", "player");
+            }
+            attack_list.Remove(ataque_eliminado);
+            Debug.Log($"Ataque eliminado: {ataque_eliminado.name} / {ataque_eliminado.active_turns} turnos");
+        }
+
+        // Mostrar los iconos de status
+        statusEffectVisualizer.UpdateIcons(attack_list); // Actualiza los iconos de efectos en el visualizador
+        //GameAssets.i.Player.GetComponent<StatusEffectVisualizer>().UpdateIcons(attack_list);
     }
 
     // Metodo para elegir un ataque basado en las probabilidades
-    private int ElegirAtaque()
+    private Enemies.EnemyAttack ElegirAtaque()
     {
-        int random = UnityEngine.Random.Range(0, 100); // Genera un numero aleatorio entre 0 y 99
-
-        if (random < probabilidadAtaque2)
-        {
-            return 2; // Ataque de 2 de daño
-        }
-        else if (random < probabilidadAtaque2 + probabilidadAtaque5)
-        {
-            return 5; // Ataque de 5 de daño
-        }
-        else
-        {
-            return 7; // Ataque de 7 de daño
-        }
+        Enemies.EnemyAttack attack = SelectedEnemy.effects[UnityEngine.Random.Range(0, SelectedEnemy.effects.Count)];
+        attack.initial_turns = attack.active_turns;
+        Debug.Log($"Ataque elegido: {attack.name} (ID: {attack.id}) con valor {attack.value} y {attack.initial_turns} turnos restantes");
+        return attack;
     }
 
-    // Metodo para obtener el daño del ataque elegido
-    private int ObtenerDano(int ataque)
-    {
-        switch (ataque)
-        {
-            case 2:
-                return danoAtaque2;
-            case 5:
-                return danoAtaque5;
-            case 7:
-                return danoAtaque7;
-            default:
-                return 0; // Si no se elige un ataque valido, no hace daño
-        }
-    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Card"))
@@ -155,7 +183,7 @@ public class EnemyController : MonoBehaviour
         Debug.Log("Enemigo recibio daño. Vida restante: " + vida);
 
         Vector3 offset = new Vector3(0, enemyPopupOffset, 0); // Offset para el popup de daño
-        damage_popup.Create(transform.position + offset, damage);
+        damage_popup.Create(transform.position + offset, damage.ToString(),"enemy");
 
         if (vida <= 0)
         {

@@ -18,5 +18,7 @@ public class GameAssets : MonoBehaviour
     }
 
     public Transform pfDamagePopup;
+    public Transform Player;
+    public Transform ManaDisplay;
     
 }
