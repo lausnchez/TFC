@@ -7,75 +7,45 @@ using UnityEngine.UIElements;
 
 public class ManaSystem : MonoBehaviour
 {
+    public static ManaSystem Instance { get; private set; } // Singleton instance
     [SerializeField] private TextMeshProUGUI manaText;
-    private int MaxMana = 10;
-    private int manaCurrent;
 
-    public int GetCurrentMana()
-    {
-        return manaCurrent;
-    }
+    private int MaxMana;
+    private int CurrentMana;
 
-    private void Start()
+    private void Awake()
     {
+        // Asignar la instancia del singleton
+        if (Instance == null)
+            Instance = this;
         ResetMana();
     }
 
-    /**
-     * Resetea el mana al valor inicial
-     */
+    // Pone el mana al máximo
     public void ResetMana()
     {
-        manaCurrent = MaxMana;
-        UpdateManaText(manaCurrent);
-        Debug.Log("Mana reset done");
+        CurrentMana = MaxMana;
+        UpdateManaDisplay();
     }
 
-
-    /***
-     * Cambia el texto del mana en la UI
-     */
-    public void UpdateManaText(int currentMana)
+    // Actualiza la cifra de manaText
+    public void UpdateManaDisplay()
     {
         if (manaText != null)
-            manaText.text = currentMana.ToString();
+        {
+            manaText.text = CurrentMana.ToString();
+        }
         else
+        {
             Debug.LogWarning("Mana text UI element is not assigned.");
-    }
-
-    /**
-     * Recibe el mana gastado de la carta y si no hay suficiente mana, no updatea el mana actual
-     */
-    public bool UseMana(int amount)
-    {
-        if (amount <= manaCurrent)
-        {
-            manaCurrent -= amount;
-            UpdateManaText(manaCurrent);
-            return true;
-        }
-        else
-        {
-            Debug.LogWarning("Not enough mana to use this amount.");
-            return false;
         }
     }
 
-    public void RecuperarMana(int mana)
+    public void InitializeManaSystem(int manaInitial)
     {
-        if ((manaCurrent + mana) <= MaxMana)
-        {
-            manaCurrent += mana;   
-        }
-        else
-        {
-            manaCurrent = MaxMana;
-        }
-        UpdateManaText(manaCurrent);
+        MaxMana = manaInitial;
+        ResetMana();
+
     }
 
-    public bool canUseMana(int amount)
-    {
-        return amount <= manaCurrent;
-    }
 }

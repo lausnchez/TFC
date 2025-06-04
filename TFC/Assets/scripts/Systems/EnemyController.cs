@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour
         // Elegir enemigo aleatorio
         System.Random random = new System.Random();
         int enemyNumber = random.Next(1, 4); // Genera un número aleatorio entre 1 y 3 (inclusive)
-        StartCoroutine(loadEnemyData("https://tfgvideojuego.lausnchez.es/api/enemy", 2));
+        StartCoroutine(loadEnemyData("https://tfgvideojuego.lausnchez.es/api/enemy", enemyNumber));
 
         // Inicializar el status effect visualizer
         if (statusEffectVisualizer == null)
@@ -61,7 +61,6 @@ public class EnemyController : MonoBehaviour
             else
             {
                 string json = www.downloadHandler.text;
-                Debug.Log("JSON recibido: " + json); // Log para depuración
                 SelectedEnemy = JsonUtility.FromJson<Enemies.EnemyDataAPI>(json);
                    
                 Sprite spriteEnemigo = Resources.Load<Sprite>("Enemies/" + SelectedEnemy.sprite);

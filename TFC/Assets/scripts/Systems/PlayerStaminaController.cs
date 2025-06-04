@@ -7,17 +7,17 @@ public class PlayerStaminaController : MonoBehaviour
     public static PlayerStaminaController Instance { get; private set; } // Singleton
 
     [Header("Stamina Settings")]
-    public int maxStamina = 100;
+    public int maxStamina;
     public int currentStamina;
     public int staminaCostPerCard = 20;
 
     [Header("Vida del Jugador")]
-    public int vidaJugador; // Vida del jugador
+    public int vidaJugador;
     private int maxVidaJugador;
     public TextMeshProUGUI playerLifeCounter;
 
     [Header("Regeneracion de Stamina")]
-    ManaSystem manaSystem;
+    //public ManaSystem manaSystem;
 
     public float staminaRegenRate = 5f;
     private float regenCooldown = 2f;
@@ -40,32 +40,37 @@ public class PlayerStaminaController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Mana management
-        manaSystem = GameAssets.i.ManaDisplay.GetComponent<ManaSystem>();
-        manaSystem.ResetMana(); // Resetea el mana al iniciar la pelea
+        // Recoger datos del character
+        //manaSystem = GameAssets.i.ManaDisplay.GetComponent<ManaSystem>();
+        InitializePlayer initPlayer = GetComponent<InitializePlayer>();
 
-        // Life management
-        maxVidaJugador = vidaJugador;
-        playerLifeCounter.text = maxVidaJugador.ToString(); // Inicializa el contador de vida del jugador
+        if (initPlayer != null)
+        {
+            initPlayer.StartCreateCharacter("https://tfgvideojuego.lausnchez.es/api/character", 1);    
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró InitializePlayer en este GameObject.");
+        }    
     }
 
     private void Start()
     {
-        manaSystem.ResetMana();
+        //manaSystem.InicializarMana(7);
     }
 
-    //private void Update()
-    //{
-    //    // Regeneracion de stamina durante el turno del jugador
-    //    if (isPlayerTurn && Time.time - lastStaminaUseTime >= regenCooldown && currentStamina < maxStamina)
-    //    {
-    //        RegenerateStamina();
-    //    }
-    //}
+    public void InicializarJugador(int vida, int stamina)
+    {
+        vidaJugador = vida;
+        maxStamina = stamina;
+        currentStamina = maxStamina;
+        Debug.Log($"Player: {vidaJugador}(vida), {currentStamina}/{maxStamina}(mana)");
+    }
 
     public bool CanUseCard(int mana)
     {
-        return manaSystem.canUseMana(mana);
+        return true;
+        //return manaSystem.canUseMana(mana);
     }
 
     public void UseCard(int mana)
@@ -78,7 +83,7 @@ public class PlayerStaminaController : MonoBehaviour
         }
         else
         {
-            Debug.Log("No puedes usar cartas en este momento o no tienes suficiente estamina.");
+            Debug.Log("No puedes usar cartas en este momento o no tienes suficiente stamina.");
         }
     }
 
@@ -107,7 +112,8 @@ public class PlayerStaminaController : MonoBehaviour
         yield return enemyController.StartCoroutine(enemyController.RealizarAtaques()); // Realiza los ataques del enemigo
 
         Debug.Log("Turno del enemigo terminado. Reiniciando estamina y comenzando tu turno.");
-        manaSystem.ResetMana();
+        //manaSystem.ResetMana();
+        //manaSystem.UseMana(1);
         isPlayerTurn = true; // Vuelve al turno del jugador
 
         // Mostrar la vida restante del jugador

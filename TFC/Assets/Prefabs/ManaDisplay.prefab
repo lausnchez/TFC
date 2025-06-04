@@ -65,13 +65,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '99
-
-
-'
+  m_text: 99
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8b03e26fcb4b358459adc8b553ad5e9d, type: 2}
+  m_sharedMaterial: {fileID: 4235914496113430434, guid: 8b03e26fcb4b358459adc8b553ad5e9d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -146,7 +143,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7347378400132791261}
-  - component: {fileID: 413778636580946061}
   - component: {fileID: 1561485625813239708}
   - component: {fileID: 2736536213637219562}
   m_Layer: 5
@@ -176,20 +172,6 @@ RectTransform:
   m_AnchoredPosition: {x: 1001, y: 984}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &413778636580946061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6104765074298820262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 236fd0f5936bdf34e90e7c5a0eb26f3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaText: {fileID: 1319742890704419670}
-  manaTotal: 5
 --- !u!222 &1561485625813239708
 CanvasRenderer:
   m_ObjectHideFlags: 0
