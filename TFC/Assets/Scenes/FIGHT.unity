@@ -789,10 +789,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 1730033647}
   turno: {fileID: 29928558}
-  spriteRenderer: {fileID: 530192590}
+  enemyName: {fileID: 1985067336}
   enemyDeathHandler: {fileID: 550317811}
   healthBar: {fileID: 2145658642}
-  enemyName: {fileID: 1985067336}
+  spriteRenderer: {fileID: 530192590}
   statusEffectVisualizer: {fileID: 0}
 --- !u!61 &530192588
 BoxCollider2D:
@@ -823,7 +823,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.11434579, y: 0.4222002}
@@ -1292,8 +1292,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaText: {fileID: 966040468}
-  MaxMana: 5
-  CurrentMana: 5
 --- !u!1 &621778361
 GameObject:
   m_ObjectHideFlags: 0
@@ -1825,8 +1823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaText: {fileID: 966040468}
-  MaxMana: 5
-  CurrentMana: 5
 --- !u!114 &938874069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2368,10 +2364,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   turno: {fileID: 29928558}
-  spriteRenderer: {fileID: 0}
+  enemyName: {fileID: 0}
   enemyDeathHandler: {fileID: 550317811}
   healthBar: {fileID: 0}
-  enemyName: {fileID: 0}
+  spriteRenderer: {fileID: 0}
   statusEffectVisualizer: {fileID: 0}
 --- !u!1001 &1130496591
 PrefabInstance:
@@ -3352,7 +3348,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1730033649}
   playerLifeCounter: {fileID: 621778363}
-  manaSystem: {fileID: 0}
 --- !u!1 &1740635188
 GameObject:
   m_ObjectHideFlags: 0

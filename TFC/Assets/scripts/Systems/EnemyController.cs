@@ -3,26 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class EnemyController : MonoBehaviour
 {
+    [Header("GameObjects")]
     private Enemies.EnemyDataAPI SelectedEnemy;
     public GameObject Player;
     public GameObject turno;
-
-    public SpriteRenderer spriteRenderer;
+    public TextMeshProUGUI enemyName;
     public EnemyDeathHandler enemyDeathHandler;
     public EnemyLifeBar healthBar;
+
+    public SpriteRenderer spriteRenderer;
+    
+
     private int vidaMaxima;
     private int vida;
     private float enemyPopupOffset = 2.5f;
     private float spriteHeight;
-    public TextMeshProUGUI enemyName;
+    
 
-    // Lista de daños por turno
-    private List<Enemies.EnemyAttack> attack_list = new List<Enemies.EnemyAttack>();
+    private List<Enemies.EnemyAttack> attack_list = new List<Enemies.EnemyAttack>();    // Daños por turno al jugador
+    private List<ActiveEffect> active_enemy_Effects = new List<ActiveEffect>();         // Daños por turno al enemigo
+
     public StatusEffectVisualizer statusEffectVisualizer;
 
     void Start()
@@ -47,6 +53,11 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    /** 
+     * Carga los datos del enemigo desde la API y asigna el sprite correspondiente.
+     * @param url URL de la API para cargar los datos del enemigo.
+     * @param idEnemy ID del enemigo a cargar.
+     */
     private IEnumerator loadEnemyData(string url, int idEnemy)
     {
         string urlWithID = url + "/" + idEnemy;
@@ -89,18 +100,21 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
-    // Metodo para que el enemigo realice 3 ataques
+
+    /*
+     * Elige un ataque del enemigo, lo agrega a la lista de ataques y resuelve los daños
+     */
     public IEnumerator RealizarAtaques()
     {
+        Debug.Log("RealizarAtaques");
         Enemies.EnemyAttack ataque = ElegirAtaque(); // Elige un ataque
         attack_list.Add(ataque); // Añade el ataque a la lista de ataques
 
         Debug.Log("----- Estado inicial de attack_list -----");
-        foreach (Enemies.EnemyAttack ataquerevisar in attack_list)
-        {
-            Debug.Log($"Nombre: {ataquerevisar.name}, Valor: {ataquerevisar.value}, Turnos restantes: {ataquerevisar.active_turns}, Turnos iniciales: {ataquerevisar.initial_turns}");
-        }
-
+        //foreach (Enemies.EnemyAttack ataquerevisar in attack_list)
+        //{
+        //    Debug.Log($"Nombre: {ataquerevisar.name}, Valor: {ataquerevisar.value}, Turnos restantes: {ataquerevisar.active_turns}, Turnos iniciales: {ataquerevisar.initial_turns}");
+        //}
 
         StartCoroutine(Attack_Resolve()); // Inicia la resolución de ataques
 
@@ -113,11 +127,14 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(1f); // Espera 1 segundo entre ataques
     }
 
-    // Realiza los ataques y los retira de la lista de ataques en caso de ser necesario
-    // Todos los ataques se almacenan aqui, y en caso de ser un 1turn se resuelve inmediatamente y se saca de la lista
-    // En caso contrario seguirá ahí hasta que se acaben los turnos de ese ataque
+    /**
+     * Realiza los ataques de la lista de ataques y los retira de la lista en caso de ser necesario
+     * Todos los ataques se almacenan aqui, y en caso de ser un 1turn se resuelve inmediatamente y se saca de la lista
+     * En caso contrario seguirá ahí hasta que se acaben los turnos de ese ataque
+     */
     public IEnumerator Attack_Resolve()
     {
+        Debug.Log("AttackResolve");
         // Realizar los daños
         List<Enemies.EnemyAttack> ataques_a_eliminar = new List<Enemies.EnemyAttack>();
         foreach (Enemies.EnemyAttack ataque_realizado in attack_list)
@@ -155,26 +172,73 @@ public class EnemyController : MonoBehaviour
         //GameAssets.i.Player.GetComponent<StatusEffectVisualizer>().UpdateIcons(attack_list);
     }
 
-    // Metodo para elegir un ataque basado en las probabilidades
+    /*     
+     * Elige un ataque aleatorio del enemigo, e inicializa sus turnos activos.
+     * @return Enemies.EnemyAttack: El ataque elegido
+     */
     private Enemies.EnemyAttack ElegirAtaque()
     {
+        Debug.Log("ElegirAtaque");
         Enemies.EnemyAttack attack = SelectedEnemy.effects[UnityEngine.Random.Range(0, SelectedEnemy.effects.Count)];
         attack.initial_turns = attack.active_turns;
-        Debug.Log($"Ataque elegido: {attack.name} (ID: {attack.id}) con valor {attack.value} y {attack.initial_turns} turnos restantes");
         return attack;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    /*
+     * Detecta cuando una carta entra en contacto con el enemigo.
+     * @param other Collider2D: El collider del objeto que ha entrado en contacto.
+     */
+    //private void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    if (other.CompareTag("Card"))
+    //    {
+    //        CardView cardView = other.GetComponent<CardView>();
+    //        if(cardView != null)
+    //        {
+    //            Debug.Log("¡La carta golpeó al enemigo!");
+    //            // Lógica para recibir daño o efectos de la carta
+    //            TakeDamage(10);
+    //        }
+    //    }
+    //}
+
+    /* 
+     * Aplica un nuevo efecto activo al enemigo.
+     * @param newEffect ActiveEffect: El efecto que se va a aplicar al enemigo.
+     */
+    public void ApplyNewEffect(ActiveEffect newEffect)
     {
-        if (other.CompareTag("Card"))
+        Debug.Log("ApplyNewEffect");
+        active_enemy_Effects.Add(newEffect);
+        Debug.Log($"Efecto aplicado: {newEffect.name} con valor {newEffect.value} y {newEffect.turnos_restantes} turnos restantes");
+    }
+
+    /* 
+     * Aplica los efectos activos al enemigo.
+     * Recorre la lista de efectos activos y aplica el daño correspondiente.
+     * Si un efecto se agota, se elimina de la lista.
+     */
+    public void ApplyEffects()
+    {
+        Debug.Log("ApplyEffects");
+        // Se recorre la lista al revés para evitar problemas al eliminar elementos mientras se itera
+        for (int i = active_enemy_Effects.Count - 1; i >= 0; i--)
         {
-            Debug.Log("¡La carta golpeó al enemigo!");
-            // Lógica para recibir daño o efectos de la carta
-            TakeDamage(10);
+            ActiveEffect effect = active_enemy_Effects[i];
+            TakeDamage(effect.value); // Aplica el daño del efecto
+            effect.turnos_restantes--; // Reduce los turnos restantes del efecto
+            if (effect.turnos_restantes <= 0)
+            {
+                active_enemy_Effects.RemoveAt(i); // Elimina el efecto si ya no le quedan turnos
+                Debug.Log($"Efecto eliminado: {effect.name}");
+            }
         }
     }
 
-    // Metodo para recibir daño
+    /* 
+     * Método para que el enemigo haga daño al jugador.
+     * @param damage int: La cantidad de daño que recibe el enemigo.
+     */
     public void TakeDamage(int damage)
     {
         vida -= damage; // Reduce la vida
@@ -190,7 +254,10 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // Metodo para manejar la muerte del enemigo
+    /*
+     * Método que maneja la muerte del enemigo.
+     * Destruye el objeto del enemigo y notifica al EnemyDeathHandler.
+     */
     public void Die()
     {
         if (vida <= 0)

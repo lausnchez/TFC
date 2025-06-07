@@ -23,6 +23,23 @@ public class damage_popup : MonoBehaviour
         return damagePopUp;
     }
 
+    public static damage_popup CreateText(Vector3 position, string dmgAmount = "")
+    {
+        Transform dmgPopupTransform = Instantiate(GameAssets.i.pfDamagePopup, position, Quaternion.identity);
+        damage_popup damagePopUp = dmgPopupTransform.GetComponent<damage_popup>();
+        damagePopUp.SetupOnlyText(dmgAmount);
+        return damagePopUp;
+    }
+
+    public void SetupOnlyText(string text)
+    {
+        string popup_text = $"<size=1.2>{text}</size>";
+        disappearTimer = 0.75f;
+        moveYSpeed = 0f;
+        textDamage.text = popup_text;
+        textColor = textDamage.color;
+    }
+
     private void Awake()
     {
         textDamage = transform.GetComponent<TextMeshPro>();

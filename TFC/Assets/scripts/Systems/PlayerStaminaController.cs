@@ -59,6 +59,9 @@ public class PlayerStaminaController : MonoBehaviour
         //manaSystem.InicializarMana(7);
     }
 
+    /**
+     * 
+     */
     public void InicializarJugador(int vida, int stamina)
     {
         vidaJugador = vida;
@@ -108,12 +111,11 @@ public class PlayerStaminaController : MonoBehaviour
     // Corrutina para simular el turno del enemigo
     private IEnumerator EnemyTurn()
     {
-        Debug.Log("Es el turno del enemigo. Realizando ataques...");
+        Debug.Log("Es el turno del enemigo. Reseteando mana. Realizando ataques...");
+        ManaSystem.Instance.ResetMana(); // Resetea el mana al inicio del turno del enemigo
         yield return enemyController.StartCoroutine(enemyController.RealizarAtaques()); // Realiza los ataques del enemigo
 
         Debug.Log("Turno del enemigo terminado. Reiniciando estamina y comenzando tu turno.");
-        //manaSystem.ResetMana();
-        //manaSystem.UseMana(1);
         isPlayerTurn = true; // Vuelve al turno del jugador
 
         // Mostrar la vida restante del jugador
@@ -127,7 +129,9 @@ public class PlayerStaminaController : MonoBehaviour
         }
     }
 
-    // Metodo para recibir da�o
+    /**
+     * Hacer cierta cantidad daño al player
+     */
     public void TakeDamage(int damage)
     {
         vidaJugador -= damage; // Reduce la vida del jugador

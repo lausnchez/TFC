@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5594938775851860403}
   - component: {fileID: 4436249873293023352}
   - component: {fileID: -6213707839069786177}
+  - component: {fileID: 4771432545485598912}
   m_Layer: 0
   m_Name: Cardd
   m_TagString: Untagged
@@ -83,7 +84,7 @@ SpriteRenderer:
   m_Size: {x: 1.14, y: 1.63}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4436249873293023352
@@ -143,3 +144,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.19, y: 1.64}
   m_EdgeRadius: 0
+--- !u!114 &4771432545485598912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6215150571536177323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac973206e6f50d04790d2907ad32e8e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData:
+    title: 
+    description: 
+    image: {fileID: 0}
+    manaCost: 0
+    damage: 0

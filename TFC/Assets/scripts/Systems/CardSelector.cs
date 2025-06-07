@@ -105,23 +105,35 @@ public class CardSelector : MonoBehaviour
     private void LaunchCardAtEnemy()
     {
         if (selectedCard == null) return;
+        Debug.Log("Lanzando carta: " + selectedCard.cardMana + " mana");
 
-        EnemyController target = FindClosestEnemy();
-        if (target == null)
+        // Verificar maná
+        if (ManaSystem.Instance.UseMana(selectedCard.cardMana))
         {
-            Debug.LogWarning("No se encontró enemigo.");
+            EnemyController target = FindClosestEnemy();
+            if (target == null)
+            {
+                Debug.LogWarning("No se encontró enemigo.");
+                return;
+            }
+            arrowInstance.SetActive(false);
+            StartCoroutine(MoveCardToTarget(selectedCard, target));
+        }
+        else
+        {
+            // Crear popup de aviso de falta de mana, ocultar flecha
+            damage_popup.CreateText(new Vector3(0,-1.75f,0), "No hay suficiente maná");
+            arrowInstance.SetActive(false);
+            Debug.Log("No hay suficiente maná para usar esta carta.");
             return;
         }
-        arrowInstance.SetActive(false);
-
-        StartCoroutine(MoveCardToTarget(selectedCard, target));
     }
 
     private IEnumerator MoveCardToTarget(CardView card, EnemyController enemy)
     {
         cardIsMoving = true;
 
-        float speed = 13f;
+        float speed = 15f;
         while (Vector2.Distance(card.transform.position, enemy.transform.position) > 0.1f)
         {
             card.transform.position = Vector2.MoveTowards(card.transform.position, enemy.transform.position, Time.deltaTime * speed);
@@ -129,7 +141,7 @@ public class CardSelector : MonoBehaviour
         }
 
         Debug.Log("Carta alcanzó al enemigo");
-        enemy.TakeDamage(10); // Aplica daño aquí directamente
+        enemy.TakeDamage(card.cardDamage);
         if (handView != null)
         {
             handView.GetCards().Remove(card);
