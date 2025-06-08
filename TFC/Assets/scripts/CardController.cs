@@ -21,6 +21,7 @@ public class CardController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log("CardController OnMouseDown");
         startDragPosition = transform.position;
         isTargeted = false;
         transform.position = GetMousePositionInWorldSpace();//pilla la posicion del raton
@@ -28,42 +29,43 @@ public class CardController : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        Debug.Log("CardController OnMouseDrag");
         transform.position = GetMousePositionInWorldSpace();
     }
 
-    private void OnMouseUp()
-    {
-        if (PlayerStaminaController.Instance != null && PlayerStaminaController.Instance.CanUseCard(manaCost))
-        {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 0.1f);
-            foreach (Collider2D hit in hits)
-            {
-                if (hit.CompareTag("enemigo"))
-                {
-                    EnemyController enemy = hit.GetComponent<EnemyController>();
-                    if (enemy != null)
-                    {
-                        enemy.TakeDamage(damage); // Inflige daño al enemigo
-                        PlayerStaminaController.Instance.UseCard(manaCost); // Reduce stamina
-                        HandManager handManager = FindObjectOfType<HandManager>();
-                        if (handManager != null)
-                        {
-                            handManager.RemoveCard(gameObject);
-                        }
-                        Destroy(gameObject); // Destruye la carta
-                    }
-                    return;
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("No puedes usar esta carta. Insuficiente mana.");
-        }
+    //private void OnMouseUp()
+    //{
+    //    if (PlayerStaminaController.Instance != null && PlayerStaminaController.Instance.CanUseCard(manaCost))
+    //    {
+    //        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 0.1f);
+    //        foreach (Collider2D hit in hits)
+    //        {
+    //            if (hit.CompareTag("enemigo"))
+    //            {
+    //                EnemyController enemy = hit.GetComponent<EnemyController>();
+    //                if (enemy != null)
+    //                {
+    //                    enemy.TakeDamage(damage); // Inflige daño al enemigo
+    //                    PlayerStaminaController.Instance.UseCard(manaCost); // Reduce stamina
+    //                    HandManager handManager = FindObjectOfType<HandManager>();
+    //                    if (handManager != null)
+    //                    {
+    //                        handManager.RemoveCard(gameObject);
+    //                    }
+    //                    Destroy(gameObject); // Destruye la carta
+    //                }
+    //                return;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("No puedes usar esta carta. Insuficiente mana.");
+    //    }
 
-        // Si no colisiona con un enemigo, vuelve a la posici�n original
-        transform.position = startDragPosition;
-    }
+    //    // Si no colisiona con un enemigo, vuelve a la posici�n original
+    //    transform.position = startDragPosition;
+    //}
 
     private Vector3 GetMousePositionInWorldSpace()
     {

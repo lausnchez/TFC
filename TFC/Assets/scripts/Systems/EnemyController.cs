@@ -193,24 +193,6 @@ public class EnemyController : MonoBehaviour
         return clonedAttack;
     }
 
-    /*
-     * Detecta cuando una carta entra en contacto con el enemigo.
-     * @param other Collider2D: El collider del objeto que ha entrado en contacto.
-     */
-    //private void OnTriggerEnter2D(Collider2D other)
-    //{
-    //    if (other.CompareTag("Card"))
-    //    {
-    //        CardView cardView = other.GetComponent<CardView>();
-    //        if(cardView != null)
-    //        {
-    //            Debug.Log("¡La carta golpeó al enemigo!");
-    //            // Lógica para recibir daño o efectos de la carta
-    //            TakeDamage(10);
-    //        }
-    //    }
-    //}
-
     /* 
      * Aplica un nuevo efecto activo al enemigo.
      * @param newEffect ActiveEffect: El efecto que se va a aplicar al enemigo.

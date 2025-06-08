@@ -10,17 +10,35 @@ public class HandView : MonoBehaviour
     [SerializeField] private SplineContainer splineContainer;
 
     private readonly List<CardView> cards = new();
-    [SerializeField] private int cardMax;
+    
+    [SerializeField] public int cardMax;
+    public int currentCards => cards.Count;
 
     public List<CardView> GetCards()
     {
         return cards;
     }
 
+    public bool CanAddCard()
+    {
+        if (cards.Count < cardMax)
+            return true;
+        else
+            return false;
+    }
+
     public IEnumerator AddCard(CardView cardview)
     {
-        cards.Add(cardview);
-        yield return UpdateCardPositions(0.15f);
+        if (CanAddCard())
+        {
+            Debug.Log("HandView ADD_CARD");
+            cards.Add(cardview);
+            yield return UpdateCardPositions(0.15f);
+        }
+        else
+        {
+            Debug.LogWarning("Cannot add card, hand is full.");
+        }
     }
 
     public IEnumerator UpdateCardPositions(float duration)

@@ -54,14 +54,6 @@ public class PlayerStaminaController : MonoBehaviour
         }    
     }
 
-    private void Start()
-    {
-        //manaSystem.InicializarMana(7);
-    }
-
-    /**
-     * 
-     */
     public void InicializarJugador(int vida, int stamina)
     {
         vidaJugador = vida;
@@ -73,13 +65,9 @@ public class PlayerStaminaController : MonoBehaviour
     public bool CanUseCard(int mana)
     {
         if (currentStamina < mana)
-        {
             return false; // No hay suficiente stamina
-        }
         else
-        {
-            return true;
-        }  
+            return true; 
     }
 
     public void UseCard(int mana)
