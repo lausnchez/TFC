@@ -10,7 +10,7 @@ public class HoverTest : MonoBehaviour
     [HideInInspector] public Vector3 originalScale = Vector3.one;
     private float originalZ;
 
-    public float hoverScale = 1.2f;
+    public float hoverScale = 0.75f;
     public float scaleSpeed = 5f;
     public float hoverZOffset = -0.2f;
 
@@ -55,9 +55,9 @@ public class HoverTest : MonoBehaviour
         // Aplicar efecto de wiggle (vibración)
         if (wiggleTween != null && wiggleTween.IsActive()) wiggleTween.Kill();
         wiggleTween = transform.DOShakeRotation(
-            duration: 1f,
+            duration: 0.5f,
             strength: new Vector3(0, 0, 5), // solo rotación en Z
-            vibrato: 10,
+            vibrato: 7,
             randomness: 90,
             fadeOut: false,
             randomnessMode: ShakeRandomnessMode.Full

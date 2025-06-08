@@ -72,8 +72,14 @@ public class PlayerStaminaController : MonoBehaviour
 
     public bool CanUseCard(int mana)
     {
-        return true;
-        //return manaSystem.canUseMana(mana);
+        if (currentStamina < mana)
+        {
+            return false; // No hay suficiente stamina
+        }
+        else
+        {
+            return true;
+        }  
     }
 
     public void UseCard(int mana)
@@ -85,15 +91,7 @@ public class PlayerStaminaController : MonoBehaviour
             Debug.Log($"Carta usada. Stamina restante: {currentStamina}");
         }
         else
-        {
-            Debug.Log("No puedes usar cartas en este momento o no tienes suficiente stamina.");
-        }
-    }
-
-    private void RegenerateStamina()
-    {
-        currentStamina = Mathf.Min(currentStamina + (int)(staminaRegenRate * Time.deltaTime), maxStamina);
-        Debug.Log($"Regenerando stamina. Stamina actual: {currentStamina}");
+            Debug.Log("No tienes suficiente stamina.");
     }
 
     // Metodo para terminar el turno del jugador
@@ -104,7 +102,6 @@ public class PlayerStaminaController : MonoBehaviour
             Debug.Log("Terminando turno del jugador...");
             isPlayerTurn = false; // Cambia al turno del enemigo
             StartCoroutine(EnemyTurn()); // Inicia la simulacion del turno del enemigo
-            //GameAssets.i.ManaDisplay.GetComponent<ManaSystem>().ResetMana(); // Resetea el mana al final del turno del jugador
         }
     }
 
@@ -114,14 +111,8 @@ public class PlayerStaminaController : MonoBehaviour
         Debug.Log("Es el turno del enemigo. Reseteando mana. Realizando ataques...");
         ManaSystem.Instance.ResetMana(); // Resetea el mana al inicio del turno del enemigo
         yield return enemyController.StartCoroutine(enemyController.RealizarAtaques()); // Realiza los ataques del enemigo
-
-        Debug.Log("Turno del enemigo terminado. Reiniciando estamina y comenzando tu turno.");
+        Debug.Log($"Turno del enemigo terminado. Vida restante del jugador: {vidaJugador}");
         isPlayerTurn = true; // Vuelve al turno del jugador
-
-        // Mostrar la vida restante del jugador
-        
-        Debug.Log($"Vida restante del jugador: {vidaJugador}");
-
         // Verificar si el jugador ha muerto
         if (vidaJugador <= 0)
         {

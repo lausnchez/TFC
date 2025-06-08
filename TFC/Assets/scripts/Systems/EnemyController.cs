@@ -153,7 +153,7 @@ public class EnemyController : MonoBehaviour
                 ataques_a_eliminar.Add(ataque_realizado); // Añade el ataque a la lista de ataques a eliminar si ya no tiene turnos restantes
                 Debug.Log($"Ataque a eliminar: {ataque_realizado.name}");
             }
-            yield return new WaitForSeconds(0.5f); // Espera 1 segundo entre ataques
+            yield return new WaitForSeconds(1); // Espera 1 segundo entre ataques
         }
         // Quitar los ataques que ya no tienen turnos restantes
         foreach (Enemies.EnemyAttack ataque_eliminado in ataques_a_eliminar)
@@ -178,10 +178,19 @@ public class EnemyController : MonoBehaviour
      */
     private Enemies.EnemyAttack ElegirAtaque()
     {
-        Debug.Log("ElegirAtaque");
-        Enemies.EnemyAttack attack = SelectedEnemy.effects[UnityEngine.Random.Range(0, SelectedEnemy.effects.Count)];
-        attack.initial_turns = attack.active_turns;
-        return attack;
+        Enemies.EnemyAttack originalAttack = SelectedEnemy.effects[UnityEngine.Random.Range(0, SelectedEnemy.effects.Count)];
+        Enemies.EnemyAttack clonedAttack = new Enemies.EnemyAttack()
+        {
+            id = originalAttack.id,
+            name = originalAttack.name,
+            description = originalAttack.description,
+            initial_turns = originalAttack.initial_turns,
+            active_turns = originalAttack.active_turns,
+            value = originalAttack.value,
+            pivot = originalAttack.pivot
+        };
+        clonedAttack.initial_turns = clonedAttack.active_turns;
+        return clonedAttack;
     }
 
     /*

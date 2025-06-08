@@ -14,7 +14,7 @@ public class Test : MonoBehaviour
             CardView cardView = CreateCardView.Instance.CreatorCardView(transform.position, Quaternion.identity);
             StartCoroutine(handView.AddCard(cardView));
         }
-        //Debug.Log("No sale nada");
+        
 
     }
 }

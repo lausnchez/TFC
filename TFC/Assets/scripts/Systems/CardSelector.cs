@@ -7,7 +7,7 @@ public class CardSelector : MonoBehaviour
     private GameObject arrowInstance;
 
     private CardView selectedCard;
-    public HandView handView; // Puedes arrastrarlo desde el inspector
+    public HandView handView;
 
     private Vector3 originalScale;
     private bool cardIsMoving = false;
@@ -121,8 +121,9 @@ public class CardSelector : MonoBehaviour
         }
         else
         {
-            // Crear popup de aviso de falta de mana, ocultar flecha
-            damage_popup.CreateText(new Vector3(0,-1.75f,0), "No hay suficiente maná");
+            // Crear popup de aviso de falta de mana, ocultar flecha, deseleccionar carta
+            selectedCard = null;
+            damage_popup.CreateText(new Vector3(0,-1,0), "No hay suficiente maná");
             arrowInstance.SetActive(false);
             Debug.Log("No hay suficiente maná para usar esta carta.");
             return;
@@ -139,12 +140,11 @@ public class CardSelector : MonoBehaviour
             card.transform.position = Vector2.MoveTowards(card.transform.position, enemy.transform.position, Time.deltaTime * speed);
             yield return null;
         }
-
-        Debug.Log("Carta alcanzó al enemigo");
         enemy.TakeDamage(card.cardDamage);
         if (handView != null)
         {
             handView.GetCards().Remove(card);
+            StartCoroutine(handView.UpdateCardPositions(0.15f));
         }
         Destroy(card.gameObject);
 

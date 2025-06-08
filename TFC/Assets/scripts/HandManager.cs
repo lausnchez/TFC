@@ -19,9 +19,7 @@ public class HandManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 DrawCard();
-                Debug.Log("pollitaburger");
             }
-
         }
     }
 
@@ -77,8 +75,6 @@ public class HandManager : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(-up, Vector3.Cross(-up, forward).normalized);
             handCards[i].transform.DOMove(splinePosition, 0.25f);
             handCards[i].transform.DOLocalRotateQuaternion(rotation, 0.25f);
-
         }
-
     }
 }

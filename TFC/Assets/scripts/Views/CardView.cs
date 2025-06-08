@@ -46,13 +46,7 @@ public class CardView : MonoBehaviour
         {
             EnemyController enemy_controller = other.GetComponent<EnemyController>();
             if (enemy_controller != null)
-            {
                 enemy_controller.TakeDamage(cardDamage);
-                
-                //enemy_controller.TakeDamage(totalDamage); // Aplica 10 de daño
-                //enemy_controller.ApplyEffects(cardData.effects); // Aplica los efectos de la carta
-                Debug.Log("¡La carta golpeó al enemigo y le hizo daño!");
-            }
         }
     }
 
