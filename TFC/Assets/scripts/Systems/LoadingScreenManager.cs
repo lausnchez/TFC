@@ -38,17 +38,12 @@ public class LoadingScreenManager : MonoBehaviour
 
     public void LoadSceneWithLoading(string sceneName)
     {
-        // Detener música del menú principal si existe
-        GameObject Menu = GameObject.Find("Menu");
-        if (Menu != null)
-        {
-            AudioSource menuAudio = Menu.GetComponent<AudioSource>();
-            if (menuAudio != null && menuAudio.isPlaying)
-            {
-                menuAudio.Stop();
-            }
-        }
+        StartCoroutine(PrepareAndLoad(sceneName));
+    }
 
+    IEnumerator PrepareAndLoad(string sceneName)
+    {
+        // Mostrar pantalla de carga inmediatamente
         if (loadingScreenInstance == null)
         {
             loadingScreenInstance = Instantiate(loadingScreenPrefab);
@@ -63,9 +58,24 @@ public class LoadingScreenManager : MonoBehaviour
             StartCoroutine(AnimateLoadingText());
         }
 
+        yield return null; // Esperar un frame para que se muestre la pantalla
+
+        // Detener música del menú principal si existe
+        GameObject Menu = GameObject.Find("Menu");
+        if (Menu != null)
+        {
+            AudioSource menuAudio = Menu.GetComponent<AudioSource>();
+            if (menuAudio != null && menuAudio.isPlaying)
+            {
+                menuAudio.Stop();
+            }
+        }
+
+        // Cargar imágenes y empezar carga de escena
         images = Resources.LoadAll<Texture>("LoadingImages");
         ShuffleArray(images);
-        StartCoroutine(PlaySequenceAndLoad(sceneName));
+
+        yield return StartCoroutine(LoadSceneAsyncWithImages(sceneName));
     }
 
     void SetupAudio()
@@ -88,31 +98,33 @@ public class LoadingScreenManager : MonoBehaviour
         }
     }
 
-    IEnumerator PlaySequenceAndLoad(string sceneName)
+    IEnumerator LoadSceneAsyncWithImages(string sceneName)
     {
-        foreach (Texture img in images)
-        {
-            yield return StartCoroutine(FadeImage(img));
-        }
-
-        yield return StartCoroutine(FadeOutAudio(fadeDuration));
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
+        int index = 0;
         while (!asyncLoad.isDone)
         {
+            if (index < images.Length)
+            {
+                displayImage.texture = images[index];
+                index++;
+            }
+
             loadProgress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
 
             if (asyncLoad.progress >= 0.9f)
             {
                 loadProgress = 1f;
-                yield return new WaitForSeconds(1f); // Opcional: pequeña pausa
+                yield return new WaitForSeconds(1f);
                 asyncLoad.allowSceneActivation = true;
             }
 
-            yield return null;
+            yield return new WaitForSeconds(imageDuration);
         }
+
+        yield return StartCoroutine(FadeOutAudio(fadeDuration));
 
         Destroy(loadingScreenInstance);
         loadingScreenInstance = null;
@@ -177,15 +189,6 @@ public class LoadingScreenManager : MonoBehaviour
         audioSource.Stop();
     }
 
-    // Se elimina el fundido a negro entre imágenes
-    IEnumerator FadeImage(Texture newTexture)
-    {
-        // Cambiar la imagen sin fundido
-        displayImage.texture = newTexture;
-
-        yield return new WaitForSeconds(imageDuration);
-    }
-
     IEnumerator AnimateLoadingText()
     {
         string baseText = "Cargando";
@@ -193,7 +196,7 @@ public class LoadingScreenManager : MonoBehaviour
 
         while (loadingScreenInstance != null)
         {
-            dotCount = (dotCount + 1) % 4; // 0 to 3
+            dotCount = (dotCount + 1) % 4;
             loadingText.text = baseText + new string('.', dotCount);
             yield return new WaitForSeconds(0.5f);
         }

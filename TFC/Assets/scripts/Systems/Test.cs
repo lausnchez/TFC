@@ -13,7 +13,7 @@ public class Test : MonoBehaviour
             if (!handView.CanAddCard())
             {
                 Debug.Log("No se puede robar carta: mano llena.");
-                // Aquí podrías poner un popup visual si quieres
+                // Aqui podrias poner un popup visual si quieres
                 return;
             }
 
